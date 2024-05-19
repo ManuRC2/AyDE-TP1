@@ -4,8 +4,39 @@ from datetime import datetime
 import os
 import time
 
-def clear(): #funcion para limpiar consola
+#funcion para limpiar consola
+def clear():
     os.system('cls' if os.name=='nt' else 'clear')
+
+# esperar input del usuario para continuar
+def esperar_input():
+    input("\nPresione enter para continuar...")
+
+# funcion que parsea correctamente la entrada de las fechas de nacimiento
+def ingresar_fecha_nacimiento():
+    fecha_parseada = ""
+    while not fecha_parseada:
+        entrada = input("Ingrese su fecha de nacimento (DD/MM/AAAA): ")
+        try:
+            fecha_parseada = datetime.strptime(entrada, "%d/%m/%Y")
+        except Exception as e:
+            clear()
+            print("Por favor, verifique que el formato de la fecha ingresada sea correcto.\n")
+    return fecha_parseada
+
+# funcion que imprime el menú para editar datos personales, con los datos especificados del estudiante
+def menu_editar_datos_personales(nacimiento, biografia, hobbies):
+    if nacimiento != "":
+        nacimiento = nacimiento.strftime("%d/%m/%Y")
+    print("\na. Editar datos personales\n")
+    print(f"1. Fecha de Nacimiento (actual: {nacimiento}): ")
+    print(f"2. Biografia (actual: {biografia}): ")
+    print(f"3. Hobbies (actual: {hobbies}): ")
+    print(f"0. Volver\n")
+
+    modificacion = input("Ingrese una opción: ")
+    clear()
+    return modificacion
 
 debug = True
 
@@ -75,10 +106,6 @@ while intento < 3 and not usuario_log:
 
 if usuario_log:
     print("Acceso correcto!")
-    time.sleep(3)
-    clear()
-    print("\nBienvenido, ¿Que desea hacer?")
-    time.sleep(2)
    
 else:
     print("Acceso invalido.")
@@ -88,42 +115,36 @@ menu = ""
 submenu = ""
 
 while menu != "0":
+    clear()
     if menu == "":
-        clear()
+        print("\nBienvenido, ¿Que desea hacer?")
         print("\n1. Gestionar mi perfil")
         print("2. Gestionar candidatos")  
         print("3. Matcheos")
         print("4. Reportes estadísticos")
         print("0. Salir\n")
         menu = input("Ingrese una opción: ")
+        clear()
     match menu:
         case "1":
             ## opción 1. gestionar mi perfil ##
-            
+            clear()
             if submenu == "":
-                clear()
                 print("\nGestión de Perfil.")
                 print("\na. Editar mis datos personales")
                 print("b. Eliminar mi perfil")
                 print("c. Volver\n")
                 submenu = input("Ingrese una opción: ")
+                clear()
             match submenu.lower():
                 case "a":
                     if usuario_log == estudiante1_email:
-                        clear()
-                        print("\na. Editar datos personales\n")
-                        print(f"1. Fecha de Nacimiento (actúal: {estudiante1_nacimiento}): ")
-                        print(f"2. Biografia (actúal: {estudiante1_biografia}): ")
-                        print(f"3. Hobbies (actúal: {estudiante1_hobbies}): ")
-                        print(f"0. Volver")
-
-                        modificacion=input("Ingrese una opción: ")
+                        modificacion = menu_editar_datos_personales(estudiante1_nacimiento, estudiante1_biografia, estudiante1_hobbies)
                         match modificacion:
                             case "1":
-                                dato = input("ingrese su fecha de nacimento (DD/MM/AAAA): ")
-                                estudiante1_nacimiento = dato
+                                estudiante1_nacimiento = ingresar_fecha_nacimiento()
                             case "2":
-                                dato = input("ingrese su biografía: ")
+                                dato = input("Ingrese su biografía: ")
                                 estudiante1_biografia  = dato
                             case "3":
                                 dato = input("Ingrese sus hobbies: ")
@@ -132,23 +153,15 @@ while menu != "0":
                                 submenu = ""
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
-                                time.sleep(3)
+                                esperar_input()
 
                     if usuario_log == estudiante2_email:
-                        clear()
-                        print("\na. Editar datos personales\n")
-                        print(f"1. Fecha de Nacimiento (actúal: {estudiante2_nacimiento}) : ")
-                        print(f"2. Biografia (actúal: {estudiante2_biografia}): ")
-                        print(f"3. Hobbies (actúal: {estudiante2_hobbies}): ")
-                        print(f"0. Volver")
-
-                        modificacion=input("Ingrese una opción: ")
+                        modificacion = menu_editar_datos_personales(estudiante2_nacimiento, estudiante2_biografia, estudiante2_hobbies)
                         match modificacion:
                             case "1":
-                                dato = input("ingrese su fecha de nacimento (DD/MM/AAAA): ")
-                                estudiante2_nacimiento = dato
+                                estudiante2_nacimiento = ingresar_fecha_nacimiento()
                             case "2":
-                                dato = input("ingrese su biografía: ")
+                                dato = input("Ingrese su biografía: ")
                                 estudiante2_biografia  = dato
                             case "3":
                                 dato = input("Ingrese sus hobbies: ")
@@ -157,23 +170,15 @@ while menu != "0":
                                 submenu = ""
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
-                                time.sleep(3)
+                                esperar_input()
 
                     if usuario_log == estudiante3_email:
-                        clear()
-                        print("\na. Editar datos personales\n")
-                        print(f"1. Fecha de Nacimiento (actúal: {estudiante3_nacimiento}): ")
-                        print(f"2. Biografia (actúal: {estudiante3_biografia}): ")
-                        print(f"3. Hobbies (actúal: {estudiante3_hobbies}): ")
-                        print(f"0. Volver")
-
-                        modificacion=input("Ingrese una opción: ")
+                        modificacion = menu_editar_datos_personales(estudiante3_nacimiento, estudiante3_biografia, estudiante3_hobbies)
                         match modificacion:
                             case "1":
-                                dato = input("ingrese su fecha de nacimento (DD/MM/AAAA): ")
-                                estudiante3_nacimiento = dato
+                                estudiante3_nacimiento = ingresar_fecha_nacimiento()
                             case "2":
-                                dato = input("ingrese su biografía: ")
+                                dato = input("Ingrese su biografía: ")
                                 estudiante3_biografia  = dato
                             case "3":
                                 dato = input("Ingrese sus hobbies: ")
@@ -182,73 +187,72 @@ while menu != "0":
                                 submenu = ""
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
-                                time.sleep(3)
+                                esperar_input()
                 case "b":
-                    # TODO
                     print("En construcción.")
-                    time.sleep(3)
+                    esperar_input()
                     submenu = ""
                 case "c":
                     submenu = ""
                     menu = ""
                 case _:
                     print("Opción invalida. Intente de nuevo.")
-                    time.sleep(3)
+                    esperar_input()
                     submenu = ""
             
         case "2":
-            clear()
             print("\nGestionar candidatos.")
             print("\na. Ver Candidatos")
             print("b. Reportar a un candidato.")
-            print("c. Volver")
+            print("c. Volver\n")
             submenu = input("Ingrese una opción: ")
+            clear()
             match submenu:
                 case "a":
                     print ("En construcción")
-                    time.sleep(3)
+                    esperar_input()
                 case "b":
                     print("En construcción.")
-                    time.sleep(3)
+                    esperar_input()
                 case "c":
                     menu = ""
                     submenu = ""
                 case _: 
                     print ("Opción invalida. Intente de nuevo.")
-                    time.sleep(3)
+                    esperar_input()
 
         case "3":
-            clear()
             print("\nMatcheos.")
             print("\na. Ver Matcheos.")
             print("b. Eliminar Matcheos.")
-            print("c. Volver")
+            print("c. Volver\n")
             submenu = input("Ingrese una opción: ")
+            clear()
             match submenu:
                 case "a":
                     print ("En construcción")
-                    time.sleep(3)
+                    esperar_input()
                 case "b":
                     print("En construcción.")
-                    time.sleep(3)
+                    esperar_input()
                 case "c":
                     menu = ""
                     submenu = ""
                 case _: 
                     print ("Opción invalida. Intente de nuevo")
-                    time.sleep(3)
+                    esperar_input()
         
         case "4":
             print("\nEn Construcción")
-            time.sleep(3)
+            esperar_input()
             menu = ""
         
         case "0":
             print("Saliendo...")
-            time.sleep(3)
+
         case _:
             print("Opción invalida. Intente de nuevo.")
-            time.sleep(3)
+            esperar_input()
             menu = ""
 
 

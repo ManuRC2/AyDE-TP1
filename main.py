@@ -1,6 +1,11 @@
 #from pwinput import pwinput#
 from getpass import getpass
 from datetime import datetime
+import os
+import time
+
+def clear(): #funcion para limpiar consola
+    os.system('cls' if os.name=='nt' else 'clear')
 
 debug = True
 
@@ -70,7 +75,10 @@ while intento < 3 and not usuario_log:
 
 if usuario_log:
     print("Acceso correcto!")
+    time.sleep(3)
+    clear()
     print("\nBienvenido, ¿Que desea hacer?")
+    time.sleep(2)
    
 else:
     print("Acceso invalido.")
@@ -80,7 +88,8 @@ menu = ""
 submenu = ""
 
 while menu != "0":
-    if menu == "":    
+    if menu == "":
+        clear()
         print("\n1. Gestionar mi perfil")
         print("2. Gestionar candidatos")  
         print("3. Matcheos")
@@ -92,6 +101,7 @@ while menu != "0":
             ## opción 1. gestionar mi perfil ##
             
             if submenu == "":
+                clear()
                 print("\nGestión de Perfil.")
                 print("\na. Editar mis datos personales")
                 print("b. Eliminar mi perfil")
@@ -100,6 +110,7 @@ while menu != "0":
             match submenu.lower():
                 case "a":
                     if usuario_log == estudiante1_email:
+                        clear()
                         print("\na. Editar datos personales\n")
                         print(f"1. Fecha de Nacimiento (actúal: {estudiante1_nacimiento}): ")
                         print(f"2. Biografia (actúal: {estudiante1_biografia}): ")
@@ -121,8 +132,10 @@ while menu != "0":
                                 submenu = ""
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
+                                time.sleep(3)
 
                     if usuario_log == estudiante2_email:
+                        clear()
                         print("\na. Editar datos personales\n")
                         print(f"1. Fecha de Nacimiento (actúal: {estudiante2_nacimiento}) : ")
                         print(f"2. Biografia (actúal: {estudiante2_biografia}): ")
@@ -144,8 +157,10 @@ while menu != "0":
                                 submenu = ""
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
+                                time.sleep(3)
 
                     if usuario_log == estudiante3_email:
+                        clear()
                         print("\na. Editar datos personales\n")
                         print(f"1. Fecha de Nacimiento (actúal: {estudiante3_nacimiento}): ")
                         print(f"2. Biografia (actúal: {estudiante3_biografia}): ")
@@ -167,18 +182,22 @@ while menu != "0":
                                 submenu = ""
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
+                                time.sleep(3)
                 case "b":
                     # TODO
                     print("En construcción.")
+                    time.sleep(3)
                     submenu = ""
                 case "c":
                     submenu = ""
                     menu = ""
                 case _:
                     print("Opción invalida. Intente de nuevo.")
+                    time.sleep(3)
                     submenu = ""
             
         case "2":
+            clear()
             print("\nGestionar candidatos.")
             print("\na. Ver Candidatos")
             print("b. Reportar a un candidato.")
@@ -187,15 +206,19 @@ while menu != "0":
             match submenu:
                 case "a":
                     print ("En construcción")
+                    time.sleep(3)
                 case "b":
                     print("En construcción.")
+                    time.sleep(3)
                 case "c":
                     menu = ""
                     submenu = ""
                 case _: 
-                    print ("En construcción")
+                    print ("Opción invalida. Intente de nuevo.")
+                    time.sleep(3)
 
         case "3":
+            clear()
             print("\nMatcheos.")
             print("\na. Ver Matcheos.")
             print("b. Eliminar Matcheos.")
@@ -204,22 +227,28 @@ while menu != "0":
             match submenu:
                 case "a":
                     print ("En construcción")
+                    time.sleep(3)
                 case "b":
                     print("En construcción.")
+                    time.sleep(3)
                 case "c":
                     menu = ""
                     submenu = ""
                 case _: 
-                    print ("En construcción")
+                    print ("Opción invalida. Intente de nuevo")
+                    time.sleep(3)
         
         case "4":
             print("\nEn Construcción")
+            time.sleep(3)
             menu = ""
         
         case "0":
             print("Saliendo...")
+            time.sleep(3)
         case _:
             print("Opción invalida. Intente de nuevo.")
+            time.sleep(3)
             menu = ""
 
 

@@ -1,4 +1,3 @@
-#from pwinput import pwinput#
 from getpass import getpass
 from datetime import datetime
 import os
@@ -32,6 +31,44 @@ def calcular_edad(fecha_nacimiento):
         edad -= 1
 
     return edad
+
+## sistema log-in, hasta 3 intentos ##
+def ingresar():
+    intentos = 3
+    logueado = ""
+    while intentos > 0 and not logueado:
+        email = input("Ingrese su email: ")
+        if email == estudiante1_email:
+            contraseña = getpass(f"Ingrese la contraseña para {email}: ")
+            if contraseña == estudiante1_contraseña:
+                logueado = estudiante1_email
+            else: 
+                intentos = intentos - 1
+                print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+
+        elif email == estudiante2_email:
+            contraseña = getpass(f"Ingrese la contraseña para {email}: ")
+            if contraseña == estudiante2_contraseña:
+                logueado = estudiante2_email 
+            else: 
+                intentos = intentos - 1
+                print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+        
+        elif email == estudiante3_email:
+            contraseña = getpass(f"Ingrese la contraseña para {email}: ")
+            if contraseña == estudiante3_contraseña:
+                logueado = estudiante3_email 
+            else: 
+                intentos = intentos - 1
+                print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+        
+        else:
+            intentos = intentos - 1
+            print(f"Email inválido. {intentos} intentos restantes.")
+        
+        esperar_input()
+        clear()
+    return logueado
 
 # imprime el menú si es necesario, y devuelve el valor del menu al que se tiene que entrar
 def ingresar_menu(menu):
@@ -67,6 +104,7 @@ def ingresar_fecha_nacimiento():
 
 # funcion que imprime el menú para editar datos personales, con los datos especificados del estudiante
 def menu_editar_datos_personales(nacimiento, biografia, hobbies):
+    print(nacimiento, biografia, hobbies)
     print("\na. Editar datos personales\n")
     print(f"1. Fecha de Nacimiento (actual: {nacimiento}): ")
     print(f"2. Biografia (actual: {biografia}): ")
@@ -78,7 +116,7 @@ def menu_editar_datos_personales(nacimiento, biografia, hobbies):
     return modificacion
 
 # muestra los datos brindados de un estudiante
-def mostrar_datos_estudiante(nombre, fecha_nacimiento, biografia, hobbies):
+def mostrar_datos_estudiante(nombre: str, fecha_nacimiento: str, biografia: str, hobbies: str):
     print(f"\nNombre: {nombre}")
     print(f"Fecha de nacimiento: {fecha_nacimiento}")
     print(f"Edad: {calcular_edad(fecha_nacimiento)}")
@@ -86,8 +124,6 @@ def mostrar_datos_estudiante(nombre, fecha_nacimiento, biografia, hobbies):
     print(f"Hobbies: {hobbies}")
 
 ################ VARIABLES ################
-
-debug = True
 
 estudiante1_email = "estudiante1@ayed.com"
 estudiante1_contraseña = "111222"
@@ -113,65 +149,22 @@ estudiante3_nacimiento = ""
 estudiante3_biografia = ""
 estudiante3_me_gusta = ""
 
-intento = 0
 usuario_log = ""
-email_correcto = False
 
-if debug:
-    usuario_log = estudiante1_email
-    estudiante1_nacimiento = "2003-02-22"
-    estudiante2_nacimiento = "2006-12-22"
-    estudiante3_nacimiento = "2005-12-22"
-    
-## sistema log-in, hasta 3 intentos ##
-
-while intento < 3 and not usuario_log:
-    
-    if not email_correcto:
-        texto = input("Ingrese su correo: ")
-        if texto == estudiante1_email:
-            email_correcto = True
-        contraseña = getpass(f"Ingrese la contraseña para {texto}: ")
-        if contraseña == estudiante1_contraseña:
-            usuario_log = estudiante1_email
-        
-        else: 
-            print("Contraseña incorrecta, intente de nuevo.")
-            intento = intento+1
-
-    elif texto == estudiante2_email:
-        email_correcto = True
-        contraseña = getpass(f"Ingrese la contraseña para {texto}: ")
-        if contraseña == estudiante2_contraseña:
-            usuario_log = estudiante2_email 
-        else: 
-            print("Contraseña incorrecta, intente de nuevo.")
-            intento = intento+1
-
-    elif texto == estudiante3_email:
-        email_correcto = True
-        contraseña = getpass(f"Ingrese la contraseña para {texto}: ")
-        if contraseña == estudiante3_contraseña:
-            usuario_log = estudiante3_email
-        else: 
-            print("Contraseña incorrecta, intente de nuevo.")
-            intento=intento+1
-
-    else: 
-        print("Correo inválido. Intente de nuevo.")
-        intento = intento + 1
-
-if usuario_log:
-    print("Acceso correcto!")
-   
-else:
-    print("Acceso invalido.")
-
-## menu interactivo ##
 menu = ""
 submenu = ""
 submenu_2 = ""
 
+usuario_log = ingresar()
+
+if usuario_log:
+    print("Acceso correcto! Ingresando al programa...")
+else:
+    print("Acceso invalido. Saliendo del programa...")
+    menu = "0"
+esperar_input()
+
+## menu interactivo ##
 while menu != "0":
     menu = ingresar_menu(menu)
     match menu:

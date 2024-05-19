@@ -2,9 +2,10 @@
 from getpass import getpass
 from datetime import datetime
 import os
-import time
 
-#funcion para limpiar consola
+################ FUNCIONES ################
+
+# funcion para limpiar consola
 def clear():
     os.system('cls' if os.name=='nt' else 'clear')
 
@@ -13,6 +14,26 @@ def esperar_input():
     # uso getpass para que no se vean los caracteres que se ingresan
     getpass("\nPresione enter para continuar...")
 
+# calcula la edad de una persona dada su fecha de nacimiento en formato (AAAA-MM-DD)
+def calcular_edad(fecha_nacimiento):
+    if not fecha_nacimiento:
+        return ""
+    fecha_actual = datetime.today()
+    año_nac = int(fecha_nacimiento[:4])
+    mes_nac = int(fecha_nacimiento[5:7])
+    dia_nac = int(fecha_nacimiento[8:10])
+    año_actual = int(fecha_actual.strftime("%Y"))
+    mes_actual = int(fecha_actual.strftime("%m"))
+    dia_actual = int(fecha_actual.strftime("%d"))
+    
+    edad = año_actual - año_nac
+
+    if not mes_actual >= mes_nac and not dia_actual >= dia_nac:
+        edad -= 1
+
+    return edad
+
+# imprime el menú si es necesario, y devuelve el valor del menu al que se tiene que entrar
 def ingresar_menu(menu):
     clear()
 
@@ -32,21 +53,20 @@ def ingresar_menu(menu):
     return menu
 
 # funcion que parsea correctamente la entrada de las fechas de nacimiento
+# se guarda el string de entradda, y no la fecha parseada en formato Datetime, porque asi es indicado en el enunciado
 def ingresar_fecha_nacimiento():
     fecha_parseada = ""
     while not fecha_parseada:
-        entrada = input("Ingrese su fecha de nacimento (DD/MM/AAAA): ")
+        entrada = input("Ingrese su fecha de nacimento (AAAA-MM-DD): ")
         try:
-            fecha_parseada = datetime.strptime(entrada, "%d/%m/%Y")
+            fecha_parseada = datetime.strptime(entrada, "%Y-%m-%d")
         except Exception as e:
             clear()
             print("Por favor, verifique que el formato de la fecha ingresada sea correcto.\n")
-    return fecha_parseada
+    return entrada
 
 # funcion que imprime el menú para editar datos personales, con los datos especificados del estudiante
 def menu_editar_datos_personales(nacimiento, biografia, hobbies):
-    if nacimiento != "":
-        nacimiento = nacimiento.strftime("%d/%m/%Y")
     print("\na. Editar datos personales\n")
     print(f"1. Fecha de Nacimiento (actual: {nacimiento}): ")
     print(f"2. Biografia (actual: {biografia}): ")
@@ -57,26 +77,41 @@ def menu_editar_datos_personales(nacimiento, biografia, hobbies):
     clear()
     return modificacion
 
+# muestra los datos brindados de un estudiante
+def mostrar_datos_estudiante(nombre, fecha_nacimiento, biografia, hobbies):
+    print(f"\nNombre: {nombre}")
+    print(f"Fecha de nacimiento: {fecha_nacimiento}")
+    print(f"Edad: {calcular_edad(fecha_nacimiento)}")
+    print(f"Biografía: {biografia}")
+    print(f"Hobbies: {hobbies}")
+
+################ VARIABLES ################
+
 debug = True
 
 estudiante1_email = "estudiante1@ayed.com"
 estudiante1_contraseña = "111222"
-estudiante1_hobbies = ""   
+estudiante1_nombre = "Estudiante1"
+estudiante1_hobbies = ""
 estudiante1_nacimiento = ""
 estudiante1_biografia = ""
-
+estudiante1_me_gusta = ""
 
 estudiante2_email = "estudiante2@ayed.com"
 estudiante2_contraseña = "333444"
-estudiante2_hobbies = ""   
+estudiante2_nombre = "Estudiante2"
+estudiante2_hobbies = ""
 estudiante2_nacimiento = ""
 estudiante2_biografia = ""
+estudiante2_me_gusta = ""
 
 estudiante3_email = "estudiante3@ayed.com" 
 estudiante3_contraseña = "555666"
-estudiante3_hobbies = ""   
+estudiante3_nombre = "Estudiante3"
+estudiante3_hobbies = ""
 estudiante3_nacimiento = ""
 estudiante3_biografia = ""
+estudiante3_me_gusta = ""
 
 intento = 0
 usuario_log = ""
@@ -84,6 +119,9 @@ email_correcto = False
 
 if debug:
     usuario_log = estudiante1_email
+    estudiante1_nacimiento = "2003-02-22"
+    estudiante2_nacimiento = "2006-12-22"
+    estudiante3_nacimiento = "2005-12-22"
     
 ## sistema log-in, hasta 3 intentos ##
 
@@ -132,6 +170,7 @@ else:
 ## menu interactivo ##
 menu = ""
 submenu = ""
+submenu_2 = ""
 
 while menu != "0":
     menu = ingresar_menu(menu)
@@ -211,24 +250,57 @@ while menu != "0":
                     submenu = ""
             
         case "2":
-            print("\nGestionar candidatos.")
-            print("\na. Ver Candidatos")
-            print("b. Reportar a un candidato.")
-            print("c. Volver\n")
-            submenu = input("Ingrese una opción: ")
-            clear()
+            if submenu == "":
+                print("\nGestionar candidatos.")
+                print("\na. Ver Candidatos")
+                print("b. Reportar a un candidato.")
+                print("c. Volver\n")
+                submenu = input("Ingrese una opción: ")
+                clear()
             match submenu:
                 case "a":
-                    print ("En construcción")
-                    esperar_input()
+                    clear()
+                    if submenu_2 == "":
+                        print("Informacion de los candidatos:")
+                        mostrar_datos_estudiante(estudiante1_nombre, estudiante1_nacimiento, estudiante1_biografia, estudiante1_hobbies)
+                        mostrar_datos_estudiante(estudiante2_nombre, estudiante2_nacimiento, estudiante2_biografia, estudiante2_hobbies)
+                        mostrar_datos_estudiante(estudiante3_nombre, estudiante3_nacimiento, estudiante3_biografia, estudiante3_hobbies)
+                        print("\n\nOpciones:")
+                        print("\na. Dar me gusta")
+                        print("b. Volver\n")
+                        submenu_2 = input("Ingrese una opción: ")
+                        clear()
+                    match submenu_2:
+                        case "a":
+                            nombre_me_gusta = input("Ingrese el nombre del usuario al que desea darle me gusta: ")
+                            nombre_es_valido = nombre_me_gusta == estudiante1_nombre or nombre_me_gusta == estudiante2_nombre or nombre_me_gusta == estudiante3_nombre
+                            if nombre_es_valido:
+                                if usuario_log == estudiante1_email:
+                                    estudiante1_me_gusta = nombre_me_gusta
+                                if usuario_log == estudiante2_email:
+                                    estudiante2_me_gusta = nombre_me_gusta
+                                if usuario_log == estudiante3_email:
+                                    estudiante3_me_gusta = nombre_me_gusta
+                                clear()
+                                print(f"Le diste me gusta al usuario: {nombre_me_gusta}")
+                            else:
+                                clear()
+                                print(f"El nombre {nombre_me_gusta} no pertenece a ningun usuario.")
+                            submenu_2 = ""
+                            esperar_input()
+                        case "b":
+                            submenu_2 = ""
+                            submenu = ""
                 case "b":
                     print("En construcción.")
+                    submenu = ""
                     esperar_input()
                 case "c":
                     menu = ""
                     submenu = ""
                 case _: 
                     print ("Opción invalida. Intente de nuevo.")
+                    submenu = ""
                     esperar_input()
 
         case "3":

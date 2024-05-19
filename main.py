@@ -10,7 +10,26 @@ def clear():
 
 # esperar input del usuario para continuar
 def esperar_input():
-    input("\nPresione enter para continuar...")
+    # uso getpass para que no se vean los caracteres que se ingresan
+    getpass("\nPresione enter para continuar...")
+
+def ingresar_menu(menu):
+    clear()
+
+    if menu != "":
+        return menu
+    
+    print("\nBienvenido, ¿Que desea hacer?")
+    print("\n1. Gestionar mi perfil")
+    print("2. Gestionar candidatos")  
+    print("3. Matcheos")
+    print("4. Reportes estadísticos")
+    print("0. Salir\n")
+    menu = input("Ingrese una opción: ")
+
+    clear()
+
+    return menu
 
 # funcion que parsea correctamente la entrada de las fechas de nacimiento
 def ingresar_fecha_nacimiento():
@@ -115,16 +134,7 @@ menu = ""
 submenu = ""
 
 while menu != "0":
-    clear()
-    if menu == "":
-        print("\nBienvenido, ¿Que desea hacer?")
-        print("\n1. Gestionar mi perfil")
-        print("2. Gestionar candidatos")  
-        print("3. Matcheos")
-        print("4. Reportes estadísticos")
-        print("0. Salir\n")
-        menu = input("Ingrese una opción: ")
-        clear()
+    menu = ingresar_menu(menu)
     match menu:
         case "1":
             ## opción 1. gestionar mi perfil ##

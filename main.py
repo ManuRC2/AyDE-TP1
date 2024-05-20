@@ -1,3 +1,11 @@
+################ INTEGRANTES ################
+# Colusso Manuel
+# Larrosa Joaquín
+# Grandoso Emmanuel
+# Aguirre Diego
+
+################ DECLARADO DE VARIABLES ################
+
 # estudiante1_email: str
 # estudiante1_contraseña: str
 # estudiante1_nombre: str
@@ -23,6 +31,8 @@
 # menu: str
 # submenu: str
 # submenu_2: str
+
+################ IMPORTACIONES ################
 
 from getpass import getpass
 from datetime import datetime
@@ -210,6 +220,8 @@ usuario_log: str = ""
 menu: str = ""
 submenu: str = ""
 submenu_2: str = ""
+
+################ PROGRAMA ################
 
 usuario_log = ingresar()
 

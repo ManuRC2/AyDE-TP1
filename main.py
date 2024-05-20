@@ -56,7 +56,7 @@ def esperar_input():
 """
 calcula la edad de una persona dada su fecha de nacimiento en formato (AAAA-MM-DD)
 
-fecha_actual = date
+fecha_actual: date
 año_nac, mes_nac, dia_nac, año_actual, mes_actual, dia_actual: int
 
 """
@@ -402,5 +402,3 @@ while menu != "0":
             print("Opción invalida. Intente de nuevo.")
             esperar_input()
             menu = ""
-
-

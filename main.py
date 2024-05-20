@@ -1,20 +1,56 @@
+# estudiante1_email: str
+# estudiante1_contraseña: str
+# estudiante1_nombre: str
+# estudiante1_hobbies: str
+# estudiante1_nacimiento: str
+# estudiante1_biografia: str
+# estudiante1_me_gusta: str
+# estudiante2_email: str
+# estudiante2_contraseña: str
+# estudiante2_nombre: str
+# estudiante2_hobbies: str
+# estudiante2_nacimiento: str
+# estudiante2_biografia: str
+# estudiante2_me_gusta: str
+# estudiante3_email: str
+# estudiante3_contraseña: str
+# estudiante3_nombre: str
+# estudiante3_hobbies: str
+# estudiante3_nacimiento: str
+# estudiante3_biografia: str
+# estudiante3_me_gusta: str
+# usuario_log: str
+# menu: str
+# submenu: str
+# submenu_2: str
+
 from getpass import getpass
 from datetime import datetime
 import os
 
 ################ FUNCIONES ################
 
-# funcion para limpiar consola
+"""
+funcion para limpiar consola
+"""
 def clear():
     os.system('cls' if os.name=='nt' else 'clear')
 
-# esperar input del usuario para continuar
+"""
+esperar input del usuario para continuar
+"""
 def esperar_input():
     # uso getpass para que no se vean los caracteres que se ingresan
     getpass("\nPresione enter para continuar...")
 
-# calcula la edad de una persona dada su fecha de nacimiento en formato (AAAA-MM-DD)
-def calcular_edad(fecha_nacimiento):
+"""
+calcula la edad de una persona dada su fecha de nacimiento en formato (AAAA-MM-DD)
+
+fecha_actual = date
+año_nac, mes_nac, dia_nac, año_actual, mes_actual, dia_actual: int
+
+"""
+def calcular_edad(fecha_nacimiento: str):
     if not fecha_nacimiento:
         return ""
     fecha_actual = datetime.today()
@@ -32,10 +68,16 @@ def calcular_edad(fecha_nacimiento):
 
     return edad
 
-## sistema log-in, hasta 3 intentos ##
+"""
+funcion de logueo, 3 intentos para ingresar
+
+intentos: int
+logueado, email: str
+"""
 def ingresar():
     intentos = 3
     logueado = ""
+    email = ""
     while intentos > 0 and not logueado:
         email = input("Ingrese su email: ")
         if email == estudiante1_email:
@@ -45,6 +87,7 @@ def ingresar():
             else: 
                 intentos = intentos - 1
                 print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+                esperar_input()
 
         elif email == estudiante2_email:
             contraseña = getpass(f"Ingrese la contraseña para {email}: ")
@@ -53,6 +96,7 @@ def ingresar():
             else: 
                 intentos = intentos - 1
                 print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+                esperar_input()
         
         elif email == estudiante3_email:
             contraseña = getpass(f"Ingrese la contraseña para {email}: ")
@@ -61,17 +105,19 @@ def ingresar():
             else: 
                 intentos = intentos - 1
                 print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+                esperar_input()
         
         else:
             intentos = intentos - 1
             print(f"Email inválido. {intentos} intentos restantes.")
-        
-        esperar_input()
+            esperar_input()
         clear()
     return logueado
 
-# imprime el menú si es necesario, y devuelve el valor del menu al que se tiene que entrar
-def ingresar_menu(menu):
+"""
+imprime el menú si es necesario, y devuelve el valor del menu al que se tiene que entrar
+"""
+def ingresar_menu(menu: str):
     clear()
 
     if menu != "":
@@ -89,8 +135,11 @@ def ingresar_menu(menu):
 
     return menu
 
-# funcion que parsea correctamente la entrada de las fechas de nacimiento
-# se guarda el string de entradda, y no la fecha parseada en formato Datetime, porque asi es indicado en el enunciado
+""" 
+funcion que parsea la entrada de las fechas de nacimiento
+
+fecha_parseada, entrada: str
+"""
 def ingresar_fecha_nacimiento():
     fecha_parseada = ""
     while not fecha_parseada:
@@ -100,10 +149,15 @@ def ingresar_fecha_nacimiento():
         except Exception as e:
             clear()
             print("Por favor, verifique que el formato de la fecha ingresada sea correcto.\n")
+    # se devuelve el string de entradda, y no la fecha parseada en formato Datetime, porque asi es indicado en el enunciado
     return entrada
 
-# funcion que imprime el menú para editar datos personales, con los datos especificados del estudiante
-def menu_editar_datos_personales(nacimiento, biografia, hobbies):
+""" 
+funcion que imprime el menú para editar datos personales, con los datos especificados del estudiante
+
+opcion: int
+"""
+def menu_editar_datos_personales(nacimiento: str, biografia: str, hobbies: str):
     print(nacimiento, biografia, hobbies)
     print("\na. Editar datos personales\n")
     print(f"1. Fecha de Nacimiento (actual: {nacimiento}): ")
@@ -111,11 +165,13 @@ def menu_editar_datos_personales(nacimiento, biografia, hobbies):
     print(f"3. Hobbies (actual: {hobbies}): ")
     print(f"0. Volver\n")
 
-    modificacion = input("Ingrese una opción: ")
+    opcion = input("Ingrese una opción: ")
     clear()
-    return modificacion
+    return opcion
 
-# muestra los datos brindados de un estudiante
+""" 
+muestra los datos brindados de un estudiante
+"""
 def mostrar_datos_estudiante(nombre: str, fecha_nacimiento: str, biografia: str, hobbies: str):
     print(f"\nNombre: {nombre}")
     print(f"Fecha de nacimiento: {fecha_nacimiento}")
@@ -125,35 +181,35 @@ def mostrar_datos_estudiante(nombre: str, fecha_nacimiento: str, biografia: str,
 
 ################ VARIABLES ################
 
-estudiante1_email = "estudiante1@ayed.com"
-estudiante1_contraseña = "111222"
-estudiante1_nombre = "Estudiante1"
-estudiante1_hobbies = ""
-estudiante1_nacimiento = ""
-estudiante1_biografia = ""
-estudiante1_me_gusta = ""
+estudiante1_email: str = "estudiante1@ayed.com"
+estudiante1_contraseña: str = "111222"
+estudiante1_nombre: str = "Estudiante1"
+estudiante1_hobbies: str = ""
+estudiante1_nacimiento: str = ""
+estudiante1_biografia: str = ""
+estudiante1_me_gusta: str = ""
 
-estudiante2_email = "estudiante2@ayed.com"
-estudiante2_contraseña = "333444"
-estudiante2_nombre = "Estudiante2"
-estudiante2_hobbies = ""
-estudiante2_nacimiento = ""
-estudiante2_biografia = ""
-estudiante2_me_gusta = ""
+estudiante2_email: str = "estudiante2@ayed.com"
+estudiante2_contraseña: str = "333444"
+estudiante2_nombre: str = "Estudiante2"
+estudiante2_hobbies: str = ""
+estudiante2_nacimiento: str = ""
+estudiante2_biografia: str = ""
+estudiante2_me_gusta: str = ""
 
-estudiante3_email = "estudiante3@ayed.com" 
-estudiante3_contraseña = "555666"
-estudiante3_nombre = "Estudiante3"
-estudiante3_hobbies = ""
-estudiante3_nacimiento = ""
-estudiante3_biografia = ""
-estudiante3_me_gusta = ""
+estudiante3_email: str = "estudiante3@ayed.com" 
+estudiante3_contraseña: str = "555666"
+estudiante3_nombre: str = "Estudiante3"
+estudiante3_hobbies: str = ""
+estudiante3_nacimiento: str = ""
+estudiante3_biografia: str = ""
+estudiante3_me_gusta: str = ""
 
-usuario_log = ""
+usuario_log: str = ""
 
-menu = ""
-submenu = ""
-submenu_2 = ""
+menu: str = ""
+submenu: str = ""
+submenu_2: str = ""
 
 usuario_log = ingresar()
 
@@ -284,6 +340,11 @@ while menu != "0":
                         case "b":
                             submenu_2 = ""
                             submenu = ""
+                        case _:
+                            print ("Opción invalida. Intente de nuevo.")
+                            submenu_2 = ""
+                            esperar_input()
+
                 case "b":
                     print("En construcción.")
                     submenu = ""

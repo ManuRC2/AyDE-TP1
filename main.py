@@ -194,6 +194,11 @@ def mostrar_datos_estudiante(nombre: str, fecha_nacimiento: str, biografia: str,
 
 ################ VARIABLES ################
 
+ESTUDIANTES_MIN = 4
+ESTUDIANTES_MAX = 8
+MODERADORES_MIN = 1
+MODERADORES_MAX = 4
+
 # [email, contraseña, nombre, hobbies, nacimiento, biografia, me_gusta]
 estudiantes = [[""]*7 for n in range(8)]
 estudiantes[0] = ["estudiante1@ayed.com", "111111", "Estudiante1", "", "", "", ""]
@@ -211,30 +216,110 @@ submenu_2: str = ""
 
 ################ PROGRAMA ################
 
-def logueo_o_registrarse():
+def cantidad_estudiantes():
+    usuarios = 0
+    for estudiante in estudiantes:
+        if estudiante[0]:
+            usuarios += 1
+    return usuarios
 
+
+def cantidad_moderadores():
+    usuarios = 0
+    for moderador in moderadores:
+        if moderador[0]:
+            usuarios += 1
+    return usuarios
+
+
+def cantidad_usuarios():
+    return cantidad_estudiantes() + cantidad_moderadores()
+
+
+def registrar():
+    n_usuario = cantidad_estudiantes()
+    
+    if n_usuario >= ESTUDIANTES_MAX:
+        print("Se alcanzó el máximo de usuarios. No se puede agregar otro.")
+        esperar_input()
+        return
+    
     opcion = ""
+    while opcion != "1" and opcion != "0":
 
-    clear()
-    print("Bienvenido! Identifiquese para ingresar al programa.")
-    print("1. Loguearse")
-    print("2. Registrarse")
-    print("0. Salir")
+        print("Ingrese los datos del nuevo estudiante:")
 
-    while opcion != "0":
+        email = input("Email: ")
+        nombre = input("Nombre: ")
+        
+        contraseñas_iguales = False
+        while not contraseñas_iguales:
+            contraseña = getpass("Contraseña: ")
+            contraseña_confirm = getpass("Vuelva a ingresar la contraseña: ")
+            
+            if contraseña == contraseña_confirm:
+                contraseñas_iguales = True
+            else:
+                clear()
+                print("Las contraseñas no coinciden. Por favor, vuelva a ingresarlas.")
+        
+        clear()
+        print("Usted va a crear un usuario con los siguientes datos:\n")
+        print("Email: ", email)
+        print("Nombre: ", nombre)
+        print("\n¿Desea continuar?\n")
+        print("1. Continuar")
+        print("2. Editar datos")
+        print("0. Cancelar\n")
         opcion = input("Ingrese una opción: ")
         
         match opcion:
             case "1":
                 clear()
-                return ingresar()
+                estudiantes[n_usuario] = [email, contraseña, nombre, '', '', '', '']
+                print("Usuario creado con éxito.")
+                esperar_input()
+                clear()
             case "2":
                 clear()
-                # registrar()
+            case "0":
+                print("Creación del usuario cancelada.")
+                esperar_input()
+
+    return
+                
+
+
+
+def logueo_o_registrarse():
+
+    opcion = ""
+
+    while opcion != "0":
+        
+        clear()
+        print("Bienvenido! Identifiquese para ingresar al programa.")
+        print("1. Loguearse")
+        print("2. Registrarse")
+        print("0. Salir")
+
+        opcion = input("Ingrese una opción: ")
+        
+        match opcion:
+            case "1":
+                clear()
+                if cantidad_estudiantes() >= ESTUDIANTES_MIN and cantidad_moderadores() >= MODERADORES_MIN:
+                    return ingresar()
+                else:
+                    print(f"No hay suficientes usuarios registrados. Por favor, registrese.")
+            case "2":
+                clear()
+                registrar()
             case "0":
                 clear()
                 return 0
             case _:
+                clear()
                 print("Opción invalida. Intente de nuevo.")
                 esperar_input()
 

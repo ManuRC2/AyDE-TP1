@@ -85,28 +85,46 @@ intentos: int
 logueado, email: str
 """
 def ingresar():
+
     intentos = 3
     logueado = ""
     email = ""
+
     while intentos > 0 and not logueado:
+
         email_correcto = False
         email = input("Ingrese su email: ")
-        for estudiante in estudiantes:
-            if email == estudiante[0]:
-                email_correcto = True
-                contraseña = getpass(f"Ingrese la contraseña para {email}: ")
-                if contraseña == estudiante[1]:
-                    logueado = email
-                else: 
-                    intentos = intentos - 1
-                    print(f"Contraseña incorrecta. {intentos} intentos restantes.")
-                    esperar_input()
-            
+        if email:
+            for estudiante in estudiantes:
+                if email == estudiante[0]:
+                    email_correcto = True
+                    contraseña = getpass(f"Ingrese la contraseña para {email}: ")
+                    if contraseña == estudiante[1]:
+                        logueado = email
+                    else: 
+                        intentos = intentos - 1
+                        print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+                        esperar_input()
+
+            if not email_correcto:
+                for moderador in moderadores:
+                    if email == estudiante[0]:
+                        email_correcto = True
+                        contraseña = getpass(f"Ingrese la contraseña para {email}: ")
+                        if contraseña == estudiante[1]:
+                            logueado = email
+                        else: 
+                            intentos = intentos - 1
+                            print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+                            esperar_input()
+
         if not email_correcto:
             intentos = intentos - 1
             print(f"Email inválido. {intentos} intentos restantes.")
             esperar_input()
+        
         clear()
+
     return logueado
 
 """
@@ -194,26 +212,38 @@ submenu_2: str = ""
 ################ PROGRAMA ################
 
 def logueo_o_registrarse():
+
+    opcion = ""
+
     clear()
     print("Bienvenido! Identifiquese para ingresar al programa.")
     print("1. Loguearse")
     print("2. Registrarse")
-    opcion = input("Ingrese una opción: ")
-    match opcion:
-        case "1":
-            clear()
-            return ingresar()
-        case "2":
-            clear()
-            return registrar()
-        case _:
-            print("Opción invalida. Intente de nuevo.")
-            esperar_input()
-            menu = ""
+    print("0. Salir")
+
+    while opcion != "0":
+        opcion = input("Ingrese una opción: ")
+        
+        match opcion:
+            case "1":
+                clear()
+                return ingresar()
+            case "2":
+                clear()
+                # registrar()
+            case "0":
+                clear()
+                return 0
+            case _:
+                print("Opción invalida. Intente de nuevo.")
+                esperar_input()
 
 usuario_log = logueo_o_registrarse()
 
-if usuario_log:
+if usuario_log == 0:
+    print("Saliendo del programa...")
+    menu = "0"
+elif usuario_log:
     print("Acceso correcto! Ingresando al programa...")
 else:
     print("Acceso invalido. Saliendo del programa...")
@@ -390,3 +420,5 @@ while menu != "0":
             print("Opción invalida. Intente de nuevo.")
             esperar_input()
             menu = ""
+
+clear()

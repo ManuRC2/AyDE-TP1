@@ -73,7 +73,7 @@ def calcular_edad(fecha_nacimiento: str):
     
     edad = año_actual - año_nac
 
-    if not mes_actual >= mes_nac and not dia_actual >= dia_nac:
+    if not(mes_actual >= mes_nac and dia_actual >= dia_nac):
         edad -= 1
 
     return edad
@@ -89,35 +89,20 @@ def ingresar():
     logueado = ""
     email = ""
     while intentos > 0 and not logueado:
+        email_correcto = False
         email = input("Ingrese su email: ")
-        if email == estudiante1_email:
-            contraseña = getpass(f"Ingrese la contraseña para {email}: ")
-            if contraseña == estudiante1_contraseña:
-                logueado = estudiante1_email
-            else: 
-                intentos = intentos - 1
-                print(f"Contraseña incorrecta. {intentos} intentos restantes.")
-                esperar_input()
-
-        elif email == estudiante2_email:
-            contraseña = getpass(f"Ingrese la contraseña para {email}: ")
-            if contraseña == estudiante2_contraseña:
-                logueado = estudiante2_email 
-            else: 
-                intentos = intentos - 1
-                print(f"Contraseña incorrecta. {intentos} intentos restantes.")
-                esperar_input()
-        
-        elif email == estudiante3_email:
-            contraseña = getpass(f"Ingrese la contraseña para {email}: ")
-            if contraseña == estudiante3_contraseña:
-                logueado = estudiante3_email 
-            else: 
-                intentos = intentos - 1
-                print(f"Contraseña incorrecta. {intentos} intentos restantes.")
-                esperar_input()
-        
-        else:
+        for estudiante in estudiantes:
+            if email == estudiante[0]:
+                email_correcto = True
+                contraseña = getpass(f"Ingrese la contraseña para {email}: ")
+                if contraseña == estudiante[1]:
+                    logueado = email
+                else: 
+                    intentos = intentos - 1
+                    print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+                    esperar_input()
+            
+        if not email_correcto:
             intentos = intentos - 1
             print(f"Email inválido. {intentos} intentos restantes.")
             esperar_input()
@@ -191,39 +176,42 @@ def mostrar_datos_estudiante(nombre: str, fecha_nacimiento: str, biografia: str,
 
 ################ VARIABLES ################
 
-estudiante1_email: str = "estudiante1@ayed.com"
-estudiante1_contraseña: str = "111222"
-estudiante1_nombre: str = "Estudiante1"
-estudiante1_hobbies: str = ""
-estudiante1_nacimiento: str = ""
-estudiante1_biografia: str = ""
-estudiante1_me_gusta: str = ""
+# [email, contraseña, nombre, hobbies, nacimiento, biografia, me_gusta]
+estudiantes = [[""]*7 for n in range(8)]
+estudiantes[0] = ["estudiante1@ayed.com", "111111", "Estudiante1", "", "", "", ""]
+estudiantes[1] = ["estudiante2@ayed.com", "222222", "Estudiante2", "", "", "", ""]
+estudiantes[2] = ["estudiante3@ayed.com", "333333", "Estudiante3", "", "", "", ""]
+estudiantes[3] = ["estudiante4@ayed.com", "444444", "Estudiante4", "", "", "", ""]
 
-estudiante2_email: str = "estudiante2@ayed.com"
-estudiante2_contraseña: str = "333444"
-estudiante2_nombre: str = "Estudiante2"
-estudiante2_hobbies: str = ""
-estudiante2_nacimiento: str = ""
-estudiante2_biografia: str = ""
-estudiante2_me_gusta: str = ""
-
-estudiante3_email: str = "estudiante3@ayed.com" 
-estudiante3_contraseña: str = "555666"
-estudiante3_nombre: str = "Estudiante3"
-estudiante3_hobbies: str = ""
-estudiante3_nacimiento: str = ""
-estudiante3_biografia: str = ""
-estudiante3_me_gusta: str = ""
+moderadores = [[""]*7 for n in range(4)]
+moderadores[0] = ["moderador1@ayed.com", "mod111", "Moderador1", "", "", "", ""]
 
 usuario_log: str = ""
-
 menu: str = ""
 submenu: str = ""
 submenu_2: str = ""
 
 ################ PROGRAMA ################
 
-usuario_log = ingresar()
+def logueo_o_registrarse():
+    clear()
+    print("Bienvenido! Identifiquese para ingresar al programa.")
+    print("1. Loguearse")
+    print("2. Registrarse")
+    opcion = input("Ingrese una opción: ")
+    match opcion:
+        case "1":
+            clear()
+            return ingresar()
+        case "2":
+            clear()
+            return registrar()
+        case _:
+            print("Opción invalida. Intente de nuevo.")
+            esperar_input()
+            menu = ""
+
+usuario_log = logueo_o_registrarse()
 
 if usuario_log:
     print("Acceso correcto! Ingresando al programa...")

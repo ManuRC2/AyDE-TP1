@@ -588,7 +588,7 @@ while not salir:
                                 print("eliminar perfil")
                             case "b":
                                 submenu = ""
-                                menu_mod = ""
+                                menu = ""
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
                                 esperar_input()
@@ -609,7 +609,7 @@ while not salir:
                                 print("ver reportes")
                             case "b":
                                 submenu = ""
-                                menu_mod = ""
+                                menu = ""
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
                                 esperar_input()

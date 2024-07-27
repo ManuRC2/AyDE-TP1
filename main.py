@@ -96,27 +96,29 @@ def ingresar():
         email = input("Ingrese su email: ")
         if email:
             for estudiante in estudiantes:
-                if email == estudiante[0]:
-                    email_correcto = True
-                    contraseña = getpass(f"Ingrese la contraseña para {email}: ")
-                    if contraseña == estudiante[1]:
-                        logueado = estudiante
-                    else: 
-                        intentos = intentos - 1
-                        print(f"Contraseña incorrecta. {intentos} intentos restantes.")
-                        esperar_input()
-
-            if not email_correcto:
-                for moderador in moderadores:
-                    if email == estudiante[0]:
+                if estudiante[1] == "ACTIVO":
+                    if email == estudiante[2]:
                         email_correcto = True
-                        contraseña = getpass(f"Ingrese la contraseña para {email}: ")
-                        if contraseña == estudiante[1]:
+                        contraseña = getpass(f"Ingrese la contraseña para {estudiante[4]}: ")
+                        if contraseña == estudiante[3]:
                             logueado = estudiante
                         else: 
                             intentos = intentos - 1
                             print(f"Contraseña incorrecta. {intentos} intentos restantes.")
                             esperar_input()
+
+            if not email_correcto:
+                for moderador in moderadores:
+                    if moderador[1] == "ACTIVO":
+                        if email == moderador[2]:
+                            email_correcto = True
+                            contraseña = getpass(f"Ingrese la contraseña para {moderador[4]}: ")
+                            if contraseña == moderador[3]:
+                                logueado = moderador
+                            else: 
+                                intentos = intentos - 1
+                                print(f"Contraseña incorrecta. {intentos} intentos restantes.")
+                                esperar_input()
 
         if not email_correcto:
             intentos = intentos - 1
@@ -172,9 +174,9 @@ opcion: int
 """
 def menu_editar_datos_personales(usuario: list):
     print("\na. Editar datos personales\n")
-    print(f"1. Fecha de Nacimiento (actual: {usuario[4]}): ")
-    print(f"2. Biografia (actual: {usuario[5]}): ")
-    print(f"3. Hobbies (actual: {usuario[3]}): ")
+    print(f"1. Fecha de Nacimiento (actual: {usuario[6]}): ")
+    print(f"2. Biografia (actual: {usuario[7]}): ")
+    print(f"3. Hobbies (actual: {usuario[5]}): ")
     print(f"0. Volver\n")
 
     opcion = input("Ingrese una opción: ")
@@ -185,11 +187,11 @@ def menu_editar_datos_personales(usuario: list):
 muestra los datos brindados de un estudiante
 """
 def mostrar_datos_estudiante(estudiante: list):
-    print(f"\nNombre: {estudiante[2]}")
-    print(f"Fecha de nacimiento: {estudiante[4]}")
-    print(f"Edad: {calcular_edad(estudiante[4])}")
-    print(f"Biografía: {estudiante[5]}")
-    print(f"Hobbies: {estudiante[3]}")
+    print(f"\nNombre: {estudiante[4]}")
+    print(f"Fecha de nacimiento: {estudiante[6]}")
+    print(f"Edad: {calcular_edad(estudiante[6])}")
+    print(f"Biografía: {estudiante[7]}")
+    print(f"Hobbies: {estudiante[5]}")
 
 ################ VARIABLES ################
 
@@ -198,15 +200,21 @@ ESTUDIANTES_MAX = 8
 MODERADORES_MIN = 1
 MODERADORES_MAX = 4
 
-# [email, contraseña, nombre, hobbies, nacimiento, biografia, me_gusta]
-estudiantes = [[""]*7 for n in range(8)]
-estudiantes[0] = ["estudiante1@ayed.com", "111111", "Estudiante1", "", "", "", ""]
-estudiantes[1] = ["estudiante2@ayed.com", "222222", "Estudiante2", "", "", "", ""]
-estudiantes[2] = ["estudiante3@ayed.com", "333333", "Estudiante3", "", "", "", ""]
-estudiantes[3] = ["estudiante4@ayed.com", "444444", "Estudiante4", "", "", "", ""]
+# [id, estado, email, contraseña, nombre, hobbies, nacimiento, biografia, me_gusta]
+estudiantes = [[""]*9 for n in range(ESTUDIANTES_MAX)]
+for id in range(ESTUDIANTES_MAX):
+    estudiantes[id][0] = str(id)
+    estudiantes[id][1] = "INACTIVO"
+estudiantes[0] = ["0", "ACTIVO", "estudiante1@ayed.com", "111111", "Estudiante1", "", "", "", ""]
+estudiantes[1] = ["1", "ACTIVO", "estudiante2@ayed.com", "222222", "Estudiante2", "", "", "", ""]
+estudiantes[2] = ["2", "ACTIVO", "estudiante3@ayed.com", "333333", "Estudiante3", "", "", "", ""]
+estudiantes[3] = ["3", "ACTIVO", "estudiante4@ayed.com", "444444", "Estudiante4", "", "", "", ""]
 
-moderadores = [[""]*7 for n in range(4)]
-moderadores[0] = ["moderador1@ayed.com", "mod111", "Moderador1", "", "", "", ""]
+moderadores = [[""]*9 for n in range(MODERADORES_MAX)]
+for id in range(MODERADORES_MAX):
+    moderadores[id][0] = str(id)
+    moderadores[id][1] = "INACTIVO"
+moderadores[0] = ["0", "ACTIVO", "moderador1@ayed.com", "mod111", "Moderador1", "", "", "", ""]
 
 usuario_log: str = ""
 menu: str = ""
@@ -218,7 +226,7 @@ submenu_2: str = ""
 def cantidad_estudiantes():
     usuarios = 0
     for estudiante in estudiantes:
-        if estudiante[0]:
+        if estudiante[1] == "ACTIVO":
             usuarios += 1
     return usuarios
 
@@ -226,13 +234,21 @@ def cantidad_estudiantes():
 def cantidad_moderadores():
     usuarios = 0
     for moderador in moderadores:
-        if moderador[0]:
+        if moderador[1] == "ACTIVO":
             usuarios += 1
     return usuarios
 
 
 def cantidad_usuarios():
     return cantidad_estudiantes() + cantidad_moderadores()
+
+
+def primer_estudiante_libre():
+    for estudiante in estudiantes:
+        if estudiante[1] != "ACTIVO":
+            return estudiante[0]
+    else:
+        return -1
 
 
 def registrar():
@@ -244,6 +260,7 @@ def registrar():
         return
     
     opcion = ""
+    id_estudiante = int(primer_estudiante_libre())
     while opcion != "1" and opcion != "0":
 
         print("Ingrese los datos del nuevo estudiante")
@@ -255,7 +272,7 @@ def registrar():
             email_valido = True
             email = input("Email: ")
             for estudiante in estudiantes:
-                if estudiante[0] == email:
+                if estudiante[2] == email:
                     email_valido = False
             if not email_valido:
                 clear()
@@ -293,7 +310,7 @@ def registrar():
         match opcion:
             case "1":
                 clear()
-                estudiantes[n_usuario] = [email, contraseña, nombre, '', '', '', '']
+                estudiantes[id_estudiante] = [str(id_estudiante), "ACTIVO", email, contraseña, nombre, '', '', '', '']
                 print("Usuario creado con éxito.")
                 esperar_input()
                 clear()
@@ -344,10 +361,10 @@ def logueo_o_registrarse():
 
 def get_usuario(email: str):
     for estudiante in estudiantes:
-        if estudiante[0] == email:
+        if estudiante[2] == email:
             return estudiante
     for moderador in moderadores:
-        if moderador[0] == email:
+        if moderador[2] == email:
             return moderador
     return None
 
@@ -384,13 +401,13 @@ while menu != "0":
                     modificacion = menu_editar_datos_personales(usuario_log)
                     match modificacion:
                         case "1":
-                            usuario_log[4] = ingresar_fecha_nacimiento()
+                            usuario_log[6] = ingresar_fecha_nacimiento()
                         case "2":
                             dato = input("Ingrese su biografía: ")
-                            usuario_log[5]  = dato
+                            usuario_log[7]  = dato
                         case "3":
                             dato = input("Ingrese sus hobbies: ")
-                            usuario_log[3] = dato
+                            usuario_log[5] = dato
                         case "0":
                             submenu = ""
                         case _:
@@ -422,7 +439,7 @@ while menu != "0":
                     if submenu_2 == "":
                         print("Informacion de los candidatos:")
                         for estudiante in estudiantes:
-                            if estudiante[0]:
+                            if estudiante[1] == "ACTIVO":
                                 mostrar_datos_estudiante(estudiante)
                         print("\n\nOpciones:")
                         print("\na. Dar me gusta")
@@ -435,10 +452,10 @@ while menu != "0":
 
                             estudiante_mg = []
                             for estudiante in estudiantes:
-                                if estudiante[2] == nombre_mg and nombre_mg:
+                                if estudiante[4] == nombre_mg and nombre_mg:
                                     estudiante_mg = estudiante
                             if estudiante_mg:
-                                usuario_log[6] = nombre_mg
+                                usuario_log[8] = nombre_mg
                                 clear()
                                 print(f"Le diste me gusta al usuario: {nombre_mg}")
                             else:

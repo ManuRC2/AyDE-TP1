@@ -100,7 +100,7 @@ def ingresar():
                     email_correcto = True
                     contraseña = getpass(f"Ingrese la contraseña para {email}: ")
                     if contraseña == estudiante[1]:
-                        logueado = email
+                        logueado = estudiante
                     else: 
                         intentos = intentos - 1
                         print(f"Contraseña incorrecta. {intentos} intentos restantes.")
@@ -112,7 +112,7 @@ def ingresar():
                         email_correcto = True
                         contraseña = getpass(f"Ingrese la contraseña para {email}: ")
                         if contraseña == estudiante[1]:
-                            logueado = email
+                            logueado = estudiante
                         else: 
                             intentos = intentos - 1
                             print(f"Contraseña incorrecta. {intentos} intentos restantes.")
@@ -170,12 +170,11 @@ funcion que imprime el menú para editar datos personales, con los datos especif
 
 opcion: int
 """
-def menu_editar_datos_personales(nacimiento: str, biografia: str, hobbies: str):
-    print(nacimiento, biografia, hobbies)
+def menu_editar_datos_personales(usuario: list):
     print("\na. Editar datos personales\n")
-    print(f"1. Fecha de Nacimiento (actual: {nacimiento}): ")
-    print(f"2. Biografia (actual: {biografia}): ")
-    print(f"3. Hobbies (actual: {hobbies}): ")
+    print(f"1. Fecha de Nacimiento (actual: {usuario[4]}): ")
+    print(f"2. Biografia (actual: {usuario[5]}): ")
+    print(f"3. Hobbies (actual: {usuario[3]}): ")
     print(f"0. Volver\n")
 
     opcion = input("Ingrese una opción: ")
@@ -185,12 +184,12 @@ def menu_editar_datos_personales(nacimiento: str, biografia: str, hobbies: str):
 """ 
 muestra los datos brindados de un estudiante
 """
-def mostrar_datos_estudiante(nombre: str, fecha_nacimiento: str, biografia: str, hobbies: str):
-    print(f"\nNombre: {nombre}")
-    print(f"Fecha de nacimiento: {fecha_nacimiento}")
-    print(f"Edad: {calcular_edad(fecha_nacimiento)}")
-    print(f"Biografía: {biografia}")
-    print(f"Hobbies: {hobbies}")
+def mostrar_datos_estudiante(estudiante: list):
+    print(f"\nNombre: {estudiante[2]}")
+    print(f"Fecha de nacimiento: {estudiante[4]}")
+    print(f"Edad: {calcular_edad(estudiante[4])}")
+    print(f"Biografía: {estudiante[5]}")
+    print(f"Hobbies: {estudiante[3]}")
 
 ################ VARIABLES ################
 
@@ -247,21 +246,39 @@ def registrar():
     opcion = ""
     while opcion != "1" and opcion != "0":
 
-        print("Ingrese los datos del nuevo estudiante:")
-
-        email = input("Email: ")
+        print("Ingrese los datos del nuevo estudiante")
+        
         nombre = input("Nombre: ")
+
+        email_valido = False
+        while not email_valido:
+            email_valido = True
+            email = input("Email: ")
+            for estudiante in estudiantes:
+                if estudiante[0] == email:
+                    email_valido = False
+            if not email_valido:
+                clear()
+                print("El email ingresado ya está en uso por otro usuario.")
         
         contraseñas_iguales = False
-        while not contraseñas_iguales:
+        contraseña_valida = False
+        while not (contraseñas_iguales and contraseña_valida):
             contraseña = getpass("Contraseña: ")
-            contraseña_confirm = getpass("Vuelva a ingresar la contraseña: ")
-            
-            if contraseña == contraseña_confirm:
-                contraseñas_iguales = True
+
+            if contraseña:
+                contraseña_valida = True
+                contraseña_confirm = getpass("Confirmar contraseña: ")
+                
+                if contraseña == contraseña_confirm:
+                    contraseñas_iguales = True
+                else:
+                    clear()
+                    print("Las contraseñas no coinciden. Por favor, vuelva a ingresarlas.")
+
             else:
                 clear()
-                print("Las contraseñas no coinciden. Por favor, vuelva a ingresarlas.")
+                print("Las contraseña no es válida. Por favor ingrese una diferente.")
         
         clear()
         print("Usted va a crear un usuario con los siguientes datos:\n")
@@ -283,13 +300,12 @@ def registrar():
             case "2":
                 clear()
             case "0":
+                clear()
                 print("Creación del usuario cancelada.")
                 esperar_input()
 
     return
                 
-
-
 
 def logueo_o_registrarse():
 
@@ -308,10 +324,12 @@ def logueo_o_registrarse():
         match opcion:
             case "1":
                 clear()
-                if cantidad_estudiantes() >= ESTUDIANTES_MIN and cantidad_moderadores() >= MODERADORES_MIN:
-                    return ingresar()
+                if cantidad_moderadores() < MODERADORES_MIN:
+                    print(f"No hay suficientes moderadores registrados. Por favor, contacte a un administrador.")
+                elif cantidad_estudiantes() < ESTUDIANTES_MIN:
+                    print(f"No hay suficientes estudiantes registrados. Por favor, registrese.")
                 else:
-                    print(f"No hay suficientes usuarios registrados. Por favor, registrese.")
+                    return ingresar()
             case "2":
                 clear()
                 registrar()
@@ -323,17 +341,29 @@ def logueo_o_registrarse():
                 print("Opción invalida. Intente de nuevo.")
                 esperar_input()
 
+
+def get_usuario(email: str):
+    for estudiante in estudiantes:
+        if estudiante[0] == email:
+            return estudiante
+    for moderador in moderadores:
+        if moderador[0] == email:
+            return moderador
+    return None
+
+
 usuario_log = logueo_o_registrarse()
 
+clear()
 if usuario_log == 0:
     print("Saliendo del programa...")
     menu = "0"
 elif usuario_log:
     print("Acceso correcto! Ingresando al programa...")
+    esperar_input()
 else:
     print("Acceso invalido. Saliendo del programa...")
     menu = "0"
-esperar_input()
 
 ## menu interactivo ##
 while menu != "0":
@@ -351,56 +381,21 @@ while menu != "0":
                 clear()
             match submenu.lower():
                 case "a":
-                    if usuario_log == estudiante1_email:
-                        modificacion = menu_editar_datos_personales(estudiante1_nacimiento, estudiante1_biografia, estudiante1_hobbies)
-                        match modificacion:
-                            case "1":
-                                estudiante1_nacimiento = ingresar_fecha_nacimiento()
-                            case "2":
-                                dato = input("Ingrese su biografía: ")
-                                estudiante1_biografia  = dato
-                            case "3":
-                                dato = input("Ingrese sus hobbies: ")
-                                estudiante1_hobbies = dato
-                            case "0":
-                                submenu = ""
-                            case _:
-                                print("Opción invalida. Intente de nuevo.")
-                                esperar_input()
-
-                    if usuario_log == estudiante2_email:
-                        modificacion = menu_editar_datos_personales(estudiante2_nacimiento, estudiante2_biografia, estudiante2_hobbies)
-                        match modificacion:
-                            case "1":
-                                estudiante2_nacimiento = ingresar_fecha_nacimiento()
-                            case "2":
-                                dato = input("Ingrese su biografía: ")
-                                estudiante2_biografia  = dato
-                            case "3":
-                                dato = input("Ingrese sus hobbies: ")
-                                estudiante2_hobbies = dato
-                            case "0":
-                                submenu = ""
-                            case _:
-                                print("Opción invalida. Intente de nuevo.")
-                                esperar_input()
-
-                    if usuario_log == estudiante3_email:
-                        modificacion = menu_editar_datos_personales(estudiante3_nacimiento, estudiante3_biografia, estudiante3_hobbies)
-                        match modificacion:
-                            case "1":
-                                estudiante3_nacimiento = ingresar_fecha_nacimiento()
-                            case "2":
-                                dato = input("Ingrese su biografía: ")
-                                estudiante3_biografia  = dato
-                            case "3":
-                                dato = input("Ingrese sus hobbies: ")
-                                estudiante3_hobbies = dato
-                            case "0":
-                                submenu = ""
-                            case _:
-                                print("Opción invalida. Intente de nuevo.")
-                                esperar_input()
+                    modificacion = menu_editar_datos_personales(usuario_log)
+                    match modificacion:
+                        case "1":
+                            usuario_log[4] = ingresar_fecha_nacimiento()
+                        case "2":
+                            dato = input("Ingrese su biografía: ")
+                            usuario_log[5]  = dato
+                        case "3":
+                            dato = input("Ingrese sus hobbies: ")
+                            usuario_log[3] = dato
+                        case "0":
+                            submenu = ""
+                        case _:
+                            print("Opción invalida. Intente de nuevo.")
+                            esperar_input()
                 case "b":
                     print("En construcción.")
                     esperar_input()
@@ -426,9 +421,9 @@ while menu != "0":
                     clear()
                     if submenu_2 == "":
                         print("Informacion de los candidatos:")
-                        mostrar_datos_estudiante(estudiante1_nombre, estudiante1_nacimiento, estudiante1_biografia, estudiante1_hobbies)
-                        mostrar_datos_estudiante(estudiante2_nombre, estudiante2_nacimiento, estudiante2_biografia, estudiante2_hobbies)
-                        mostrar_datos_estudiante(estudiante3_nombre, estudiante3_nacimiento, estudiante3_biografia, estudiante3_hobbies)
+                        for estudiante in estudiantes:
+                            if estudiante[0]:
+                                mostrar_datos_estudiante(estudiante)
                         print("\n\nOpciones:")
                         print("\na. Dar me gusta")
                         print("b. Volver\n")
@@ -436,20 +431,19 @@ while menu != "0":
                         clear()
                     match submenu_2:
                         case "a":
-                            nombre_me_gusta = input("Ingrese el nombre del usuario al que desea darle me gusta: ")
-                            nombre_es_valido = nombre_me_gusta == estudiante1_nombre or nombre_me_gusta == estudiante2_nombre or nombre_me_gusta == estudiante3_nombre
-                            if nombre_es_valido:
-                                if usuario_log == estudiante1_email:
-                                    estudiante1_me_gusta = nombre_me_gusta
-                                if usuario_log == estudiante2_email:
-                                    estudiante2_me_gusta = nombre_me_gusta
-                                if usuario_log == estudiante3_email:
-                                    estudiante3_me_gusta = nombre_me_gusta
+                            nombre_mg = input("Ingrese el nombre del usuario al que desea darle me gusta: ")
+
+                            estudiante_mg = []
+                            for estudiante in estudiantes:
+                                if estudiante[2] == nombre_mg and nombre_mg:
+                                    estudiante_mg = estudiante
+                            if estudiante_mg:
+                                usuario_log[6] = nombre_mg
                                 clear()
-                                print(f"Le diste me gusta al usuario: {nombre_me_gusta}")
+                                print(f"Le diste me gusta al usuario: {nombre_mg}")
                             else:
                                 clear()
-                                print(f"El nombre {nombre_me_gusta} no pertenece a ningun usuario.")
+                                print(f"El nombre {nombre_mg} no pertenece a ningun usuario.")
                             submenu_2 = ""
                             esperar_input()
                         case "b":
@@ -505,5 +499,3 @@ while menu != "0":
             print("Opción invalida. Intente de nuevo.")
             esperar_input()
             menu = ""
-
-clear()

@@ -223,10 +223,10 @@ estudiantes = [[""]*9 for n in range(ESTUDIANTES_MAX)]
 for id in range(ESTUDIANTES_MAX):
     estudiantes[id][0] = str(id)
     estudiantes[id][1] = "INACTIVO"
-estudiantes[0] = ["0", "ACTIVO", "estudiante1@ayed.com", "111111", "Estudiante1", "", "", "", ""]
-estudiantes[1] = ["1", "ACTIVO", "estudiante2@ayed.com", "222222", "Estudiante2", "", "", "", ""]
-estudiantes[2] = ["2", "ACTIVO", "estudiante3@ayed.com", "333333", "Estudiante3", "", "", "", ""]
-estudiantes[3] = ["3", "ACTIVO", "estudiante4@ayed.com", "444444", "Estudiante4", "", "", "", ""]
+estudiantes[0] = ["0", "ACTIVO", "estudiante1@ayed.com", "111111", "Estudiante1", "a", "", "f", ""]
+estudiantes[1] = ["1", "ACTIVO", "estudiante2@ayed.com", "222222", "Estudiante2", "b", "", "g", ""]
+estudiantes[2] = ["2", "ACTIVO", "estudiante3@ayed.com", "333333", "Estudiante3", "c", "", "h", ""]
+estudiantes[3] = ["3", "ACTIVO", "estudiante4@ayed.com", "444444", "Estudiante4", "d", "", "i", ""]
 
 moderadores = [[""]*9 for n in range(MODERADORES_MAX)]
 for id in range(MODERADORES_MAX):
@@ -238,6 +238,7 @@ usuario_log: str = ""
 menu: str = ""
 submenu: str = ""
 submenu_2: str = ""
+submenu_3: str = ""
 
 ################ PROGRAMA ################
 
@@ -579,16 +580,46 @@ while not salir:
                         if submenu == "":
                             print("\nGestionar Usuarios")
                             print("\na. Desactivar Usuario")
-                            print("b.Volver")
+                            print("b. Volver")
                             submenu = input("Ingrese una opción: ")
                             clear()
                         match submenu.lower():
                             case "a":
-                                # wip
-                                print("eliminar perfil")
+                                clear()
+                                if submenu_3 == "":
+                                    print("a. buscar por ID")
+                                    print("b. buscar por nombre")
+                                    print("c. volver")
+                                    submenu_3 = input("ingrese opcion")
+                                    clear()
+                                match submenu_3.lower():
+                                    case "a":
+                                        id_buscado = input("Ingrese el ID del usuario al que desea desactivar: ")
+                                        id_desactivar = []
+                                        for estudiante in estudiantes:
+                                            if estudiante[0] == id_buscado and id_buscado:
+                                                id_desactivar = estudiante
+                                        if id_desactivar:
+                                            usuario_log[0] = id_buscado
+                                            estudiante[1] == "INACTIVO"
+                                            clear()
+                                            print(f"eliminaste tu usuario")
+                                        else:
+                                            clear()
+                                            print(f"El id {id_buscado} no pertenece a ningun usuario.")
+                                        submenu_3 = ""
+                                        esperar_input()
+
+                                    #case "b":
+                                    
+                                    case "c":
+                                        submenu_3 = ""
+                                        submenu = ""
+
                             case "b":
                                 submenu = ""
                                 menu = ""
+
                             case _:
                                 print("Opción invalida. Intente de nuevo.")
                                 esperar_input()
@@ -607,6 +638,7 @@ while not salir:
                             case "a":
                                 # wip
                                 print("ver reportes")
+                                esperar_input()
                             case "b":
                                 submenu = ""
                                 menu = ""

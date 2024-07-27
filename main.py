@@ -331,16 +331,17 @@ def logueo_o_registrarse():
     while opcion != "0":
         
         clear()
-        print("Bienvenido! Identifiquese para ingresar al programa.")
+        print("Bienvenido! Identifiquese para ingresar al programa.\n")
         print("1. Loguearse")
         print("2. Registrarse")
-        print("0. Salir")
+        print("0. Salir\n")
 
         opcion = input("Ingrese una opción: ")
         
+        clear()
+
         match opcion:
             case "1":
-                clear()
                 if cantidad_moderadores() < MODERADORES_MIN:
                     print(f"No hay suficientes moderadores registrados. Por favor, contacte a un administrador.")
                 elif cantidad_estudiantes() < ESTUDIANTES_MIN:
@@ -348,13 +349,10 @@ def logueo_o_registrarse():
                 else:
                     return ingresar()
             case "2":
-                clear()
                 registrar()
             case "0":
-                clear()
                 return 0
             case _:
-                clear()
                 print("Opción invalida. Intente de nuevo.")
                 esperar_input()
 
@@ -369,150 +367,187 @@ def get_usuario(email: str):
     return None
 
 
-usuario_log = logueo_o_registrarse()
 
-clear()
-if usuario_log == 0:
-    print("Saliendo del programa...")
-    menu = "0"
-elif usuario_log:
-    print("Acceso correcto! Ingresando al programa...")
-    esperar_input()
-else:
-    print("Acceso invalido. Saliendo del programa...")
-    menu = "0"
+def get_tipo_usuario(email: str):
+    for estudiante in estudiantes:
+        if estudiante[2] == email:
+            return "ESTUDIANTE"
+    for moderador in moderadores:
+        if moderador[2] == email:
+            return "MODERADOR"
+    return ""
 
-## menu interactivo ##
-while menu != "0":
-    menu = ingresar_menu(menu)
-    match menu:
-        case "1":
-            ## opción 1. gestionar mi perfil ##
-            clear()
-            if submenu == "":
-                print("\nGestión de Perfil.")
-                print("\na. Editar mis datos personales")
-                print("b. Eliminar mi perfil")
-                print("c. Volver\n")
-                submenu = input("Ingrese una opción: ")
+salir = False
+while not salir:
+    usuario_log = logueo_o_registrarse()
+    tipo_usuario = ""
+
+    clear()
+    if usuario_log == 0:
+        print("Saliendo del programa...")
+        menu = "0"
+        salir = True
+    elif usuario_log:
+        print("Acceso correcto! Ingresando al programa...")
+        tipo_usuario = get_tipo_usuario(usuario_log[2])
+        esperar_input()
+    else:
+        print("Acceso invalido. Saliendo del programa...")
+        menu = "0"
+        salir = True
+    
+
+    ## menu interactivo ##
+    while menu != "0":
+        menu = ingresar_menu(menu)
+        match menu:
+            case "1":
+                ## opción 1. gestionar mi perfil ##
                 clear()
-            match submenu.lower():
-                case "a":
-                    modificacion = menu_editar_datos_personales(usuario_log)
-                    match modificacion:
-                        case "1":
-                            usuario_log[6] = ingresar_fecha_nacimiento()
-                        case "2":
-                            dato = input("Ingrese su biografía: ")
-                            usuario_log[7]  = dato
-                        case "3":
-                            dato = input("Ingrese sus hobbies: ")
-                            usuario_log[5] = dato
-                        case "0":
-                            submenu = ""
-                        case _:
-                            print("Opción invalida. Intente de nuevo.")
-                            esperar_input()
-                case "b":
-                    print("En construcción.")
-                    esperar_input()
-                    submenu = ""
-                case "c":
-                    submenu = ""
-                    menu = ""
-                case _:
-                    print("Opción invalida. Intente de nuevo.")
-                    esperar_input()
-                    submenu = ""
-            
-        case "2":
-            if submenu == "":
-                print("\nGestionar candidatos.")
-                print("\na. Ver Candidatos")
-                print("b. Reportar a un candidato.")
-                print("c. Volver\n")
-                submenu = input("Ingrese una opción: ")
-                clear()
-            match submenu:
-                case "a":
+                if submenu == "":
+                    print("\nGestión de Perfil.")
+                    print("\na. Editar mis datos personales")
+                    print("b. Eliminar mi perfil")
+                    print("c. Volver\n")
+                    submenu = input("Ingrese una opción: ")
                     clear()
-                    if submenu_2 == "":
-                        print("Informacion de los candidatos:")
-                        for estudiante in estudiantes:
-                            if estudiante[1] == "ACTIVO":
-                                mostrar_datos_estudiante(estudiante)
-                        print("\n\nOpciones:")
-                        print("\na. Dar me gusta")
-                        print("b. Volver\n")
-                        submenu_2 = input("Ingrese una opción: ")
+                match submenu.lower():
+                    case "a":
+                        modificacion = menu_editar_datos_personales(usuario_log)
+                        match modificacion:
+                            case "1":
+                                usuario_log[6] = ingresar_fecha_nacimiento()
+                            case "2":
+                                dato = input("Ingrese su biografía: ")
+                                usuario_log[7]  = dato
+                            case "3":
+                                dato = input("Ingrese sus hobbies: ")
+                                usuario_log[5] = dato
+                            case "0":
+                                submenu = ""
+                            case _:
+                                print("Opción invalida. Intente de nuevo.")
+                                esperar_input()
+                    case "b":
                         clear()
-                    match submenu_2:
-                        case "a":
-                            nombre_mg = input("Ingrese el nombre del usuario al que desea darle me gusta: ")
+                        print("¿Esta seguro de que desea eliminar su perfil?\n")
+                        print("1. Si")
+                        print("2. No\n")
+                        opcion = input("Ingrese una opción: ")
+                        clear()
+                        match opcion:
+                            case "1":
+                                usuario_log[1] = "INACTIVO"
+                                print("Perfil eliminado con éxito. Saliendo...")
+                                esperar_input()
+                                menu = "0"
+                                submenu = ""
+                            case "2":
+                                print("No se eliminó el perfil.")
+                                esperar_input()
+                                submenu = ""
+                            case _:
+                                print("Opción invalida. Intente de nuevo.")
+                                esperar_input()
 
-                            estudiante_mg = []
+                    case "c":
+                        submenu = ""
+                        menu = ""
+                    case _:
+                        print("Opción invalida. Intente de nuevo.")
+                        esperar_input()
+                        submenu = ""
+                
+            case "2":
+                if submenu == "":
+                    print("\nGestionar candidatos.")
+                    print("\na. Ver Candidatos")
+                    print("b. Reportar a un candidato.")
+                    print("c. Volver\n")
+                    submenu = input("Ingrese una opción: ")
+                    clear()
+                match submenu:
+                    case "a":
+                        clear()
+                        if submenu_2 == "":
+                            print("Informacion de los candidatos:")
                             for estudiante in estudiantes:
-                                if estudiante[4] == nombre_mg and nombre_mg:
-                                    estudiante_mg = estudiante
-                            if estudiante_mg:
-                                usuario_log[8] = nombre_mg
-                                clear()
-                                print(f"Le diste me gusta al usuario: {nombre_mg}")
-                            else:
-                                clear()
-                                print(f"El nombre {nombre_mg} no pertenece a ningun usuario.")
-                            submenu_2 = ""
-                            esperar_input()
-                        case "b":
-                            submenu_2 = ""
-                            submenu = ""
-                        case _:
-                            print ("Opción invalida. Intente de nuevo.")
-                            submenu_2 = ""
-                            esperar_input()
+                                if estudiante[1] == "ACTIVO":
+                                    mostrar_datos_estudiante(estudiante)
+                            print("\n\nOpciones:")
+                            print("\na. Dar me gusta")
+                            print("b. Volver\n")
+                            submenu_2 = input("Ingrese una opción: ")
+                            clear()
+                        match submenu_2:
+                            case "a":
+                                nombre_mg = input("Ingrese el nombre del usuario al que desea darle me gusta: ")
 
-                case "b":
-                    print("En construcción.")
-                    submenu = ""
-                    esperar_input()
-                case "c":
-                    menu = ""
-                    submenu = ""
-                case _: 
-                    print ("Opción invalida. Intente de nuevo.")
-                    submenu = ""
-                    esperar_input()
+                                estudiante_mg = []
+                                for estudiante in estudiantes:
+                                    if estudiante[4] == nombre_mg and nombre_mg:
+                                        estudiante_mg = estudiante
+                                if estudiante_mg:
+                                    usuario_log[8] = nombre_mg
+                                    clear()
+                                    print(f"Le diste me gusta al usuario: {nombre_mg}")
+                                else:
+                                    clear()
+                                    print(f"El nombre {nombre_mg} no pertenece a ningun usuario.")
+                                submenu_2 = ""
+                                esperar_input()
+                            case "b":
+                                submenu_2 = ""
+                                submenu = ""
+                            case _:
+                                print ("Opción invalida. Intente de nuevo.")
+                                submenu_2 = ""
+                                esperar_input()
 
-        case "3":
-            print("\nMatcheos.")
-            print("\na. Ver Matcheos.")
-            print("b. Eliminar Matcheos.")
-            print("c. Volver\n")
-            submenu = input("Ingrese una opción: ")
-            clear()
-            match submenu:
-                case "a":
-                    print ("En construcción")
-                    esperar_input()
-                case "b":
-                    print("En construcción.")
-                    esperar_input()
-                case "c":
-                    menu = ""
-                    submenu = ""
-                case _: 
-                    print ("Opción invalida. Intente de nuevo")
-                    esperar_input()
-        
-        case "4":
-            print("\nEn Construcción")
-            esperar_input()
-            menu = ""
-        
-        case "0":
-            print("Saliendo...")
+                    case "b":
+                        print("En construcción.")
+                        submenu = ""
+                        esperar_input()
+                    case "c":
+                        menu = ""
+                        submenu = ""
+                    case _: 
+                        print ("Opción invalida. Intente de nuevo.")
+                        submenu = ""
+                        esperar_input()
 
-        case _:
-            print("Opción invalida. Intente de nuevo.")
-            esperar_input()
-            menu = ""
+            case "3":
+                print("\nMatcheos.")
+                print("\na. Ver Matcheos.")
+                print("b. Eliminar Matcheos.")
+                print("c. Volver\n")
+                submenu = input("Ingrese una opción: ")
+                clear()
+                match submenu:
+                    case "a":
+                        print ("En construcción")
+                        esperar_input()
+                    case "b":
+                        print("En construcción.")
+                        esperar_input()
+                    case "c":
+                        menu = ""
+                        submenu = ""
+                    case _: 
+                        print ("Opción invalida. Intente de nuevo")
+                        esperar_input()
+            
+            case "4":
+                print("\nEn Construcción")
+                esperar_input()
+                menu = ""
+            
+            case "0":
+                print("Saliendo...")
+
+            case _:
+                print("Opción invalida. Intente de nuevo.")
+                esperar_input()
+                menu = ""
+
+    menu = ""

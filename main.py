@@ -160,8 +160,7 @@ def ingresar_menu_mods(menu: str):
 
     print("\nBienvenido, ¿Que desea hacer?")
     print("\n1. Gestionar usuarios")
-    print("2. Gestionar Reportes")  
-    print("3. Reportes Estadisticos")
+    print("2. Gestionar Reportes")
     print("0. Salir\n")
     menu = input("Ingrese una opción: ")
 
@@ -572,8 +571,8 @@ while not salir:
                         menu = ""
 
             case "MODERADOR":
-                menu_mods = ingresar_menu_mods(menu_mods)
-                match menu_mods:
+                menu = ingresar_menu_mods(menu)
+                match menu:
                     case "1":
                         # opcion 1, gestionar usuarios
                         clear()

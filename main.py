@@ -218,21 +218,23 @@ ESTUDIANTES_MAX = 8
 MODERADORES_MIN = 1
 MODERADORES_MAX = 4
 
-# [id, estado, email, contraseña, nombre, hobbies, nacimiento, biografia, me_gusta]
-estudiantes = [[""]*9 for n in range(ESTUDIANTES_MAX)]
+# [id, estado, email, contraseña, nombre, hobbies, nacimiento, biografia]
+estudiantes = [[""]*8 for n in range(ESTUDIANTES_MAX)]
 for id in range(ESTUDIANTES_MAX):
     estudiantes[id][0] = str(id)
     estudiantes[id][1] = "INACTIVO"
-estudiantes[0] = ["0", "ACTIVO", "estudiante1@ayed.com", "111111", "Estudiante1", "a", "", "f", ""]
-estudiantes[1] = ["1", "ACTIVO", "estudiante2@ayed.com", "222222", "Estudiante2", "b", "", "g", ""]
-estudiantes[2] = ["2", "ACTIVO", "estudiante3@ayed.com", "333333", "Estudiante3", "c", "", "h", ""]
-estudiantes[3] = ["3", "ACTIVO", "estudiante4@ayed.com", "444444", "Estudiante4", "d", "", "i", ""]
+estudiantes[0] = ["0", "ACTIVO", "estudiante1@ayed.com", "111111", "Estudiante1", "a", "", "f"]
+estudiantes[1] = ["1", "ACTIVO", "estudiante2@ayed.com", "222222", "Estudiante2", "b", "", "g"]
+estudiantes[2] = ["2", "ACTIVO", "estudiante3@ayed.com", "333333", "Estudiante3", "c", "", "h"]
+estudiantes[3] = ["3", "ACTIVO", "estudiante4@ayed.com", "444444", "Estudiante4", "d", "", "i"]
 
-moderadores = [[""]*9 for n in range(MODERADORES_MAX)]
+moderadores = [[""]*8 for n in range(MODERADORES_MAX)]
 for id in range(MODERADORES_MAX):
     moderadores[id][0] = str(id)
     moderadores[id][1] = "INACTIVO"
-moderadores[0] = ["0", "ACTIVO", "moderador1@ayed.com", "mod111", "Moderador1", "", "", "", ""]
+moderadores[0] = ["0", "ACTIVO", "moderador1@ayed.com", "mod111", "Moderador1", "", "", ""]
+
+likes = [[False]*ESTUDIANTES_MAX for n in range(ESTUDIANTES_MAX)]
 
 usuario_log: str = ""
 menu: str = ""
@@ -509,9 +511,9 @@ while not salir:
                                             if estudiante[4] == nombre_mg and nombre_mg:
                                                 estudiante_mg = estudiante
                                         if estudiante_mg:
-                                            usuario_log[8] = nombre_mg
+                                            likes[int(usuario_log[0])][int(estudiante_mg[0])] = True
                                             clear()
-                                            print(f"Le diste me gusta al usuario: {nombre_mg}")
+                                            print(f"Le diste me gusta al usuario {nombre_mg}")
                                         else:
                                             clear()
                                             print(f"El nombre {nombre_mg} no pertenece a ningun usuario.")
@@ -559,7 +561,22 @@ while not salir:
                                 esperar_input()
 
                     case "4":
-                        print("\nEn Construcción")
+                        print("\nReportes estadísticos\n")
+                        likes_correspondidos = 0
+                        likes_dados = 0
+                        likes_recibidos = 0
+                        for n in range(ESTUDIANTES_MAX):
+                            if likes[int(usuario_log[0])][n] and likes[n][int(usuario_log[0])]:
+                                likes_correspondidos += 1
+                            else:
+                                if likes[int(usuario_log[0])][n]:
+                                    likes_dados += 1
+                                if likes[n][int(usuario_log[0])]:
+                                    likes_recibidos += 1
+                        porcentaje_correspondidos = likes_correspondidos*100/(cantidad_estudiantes()-1)
+                        print(f"Matcheados sobre el % posible: {porcentaje_correspondidos}%")
+                        print(f"Likes dados y no recibidos: {likes_dados}")
+                        print(f"Likes recibidos y no respondidos: {likes_recibidos}")
                         esperar_input()
                         menu = ""
 
@@ -586,13 +603,13 @@ while not salir:
                         match submenu.lower():
                             case "a":
                                 clear()
-                                if submenu_3 == "":
-                                    print("a. buscar por ID")
-                                    print("b. buscar por nombre")
-                                    print("c. volver")
-                                    submenu_3 = input("ingrese opcion")
+                                if submenu_2 == "":
+                                    print("a. Buscar por ID")
+                                    print("b. Buscar por nombre")
+                                    print("c. Volver")
+                                    submenu_2 = input("Ingrese una opcion: ")
                                     clear()
-                                match submenu_3.lower():
+                                match submenu_2.lower():
                                     case "a":
                                         id_buscado = input("Ingrese el ID del usuario al que desea desactivar: ")
                                         id_desactivar = []
@@ -603,17 +620,20 @@ while not salir:
                                             usuario_log[0] = id_buscado
                                             estudiante[1] == "INACTIVO"
                                             clear()
-                                            print(f"eliminaste tu usuario")
+                                            print(f"Se desactivo el usuario {estudiante[4]}")
                                         else:
                                             clear()
                                             print(f"El id {id_buscado} no pertenece a ningun usuario.")
-                                        submenu_3 = ""
+                                        submenu_2 = ""
                                         esperar_input()
 
-                                    #case "b":
+                                    case "b":
+                                        print("En construcción.")
+                                        submenu_2 = ""
+                                        esperar_input()
                                     
                                     case "c":
-                                        submenu_3 = ""
+                                        submenu_2 = ""
                                         submenu = ""
 
                             case "b":
@@ -631,7 +651,7 @@ while not salir:
                         if submenu == "":
                             print("\nGestionar Reportes")
                             print("\na. Ver Reportes")
-                            print("b.Volver")
+                            print("b. Volver")
                             submenu = input("Ingrese una opción: ")
                             clear()
                         match submenu.lower():

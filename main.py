@@ -217,6 +217,7 @@ ESTUDIANTES_MIN = 4
 ESTUDIANTES_MAX = 8
 MODERADORES_MIN = 1
 MODERADORES_MAX = 4
+REPORTES_MAX = 10
 
 # [id, estado, email, contraseña, nombre, hobbies, nacimiento, biografia]
 estudiantes = [[""]*8 for n in range(ESTUDIANTES_MAX)]
@@ -235,6 +236,11 @@ for id in range(MODERADORES_MAX):
 moderadores[0] = ["0", "ACTIVO", "moderador1@ayed.com", "mod111", "Moderador1", "", "", ""]
 
 likes = [[False]*ESTUDIANTES_MAX for n in range(ESTUDIANTES_MAX)]
+
+# [id, estado, id_reportante, id_reportado, razon]
+reportes = [[""]*5 for n in range(REPORTES_MAX)]
+for id in range(REPORTES_MAX):
+    reportes[id][0] = str(id)
 
 usuario_log: str = ""
 menu: str = ""
@@ -388,6 +394,12 @@ def get_usuario(email: str):
     return None
 
 
+def get_usuario_por_id(id: str):
+    for estudiante in estudiantes:
+        if estudiante[0] == id:
+            return estudiante
+    return None
+
 
 def get_tipo_usuario(email: str):
     for estudiante in estudiantes:
@@ -397,6 +409,13 @@ def get_tipo_usuario(email: str):
         if moderador[2] == email:
             return "MODERADOR"
     return ""
+
+
+def get_reporte_libre():
+    for reporte in reportes:
+        if reporte[1] != "0":
+            return reporte[0]
+    return "-1"
 
 salir = False
 while not salir:
@@ -528,7 +547,23 @@ while not salir:
                                         esperar_input()
 
                             case "b":
-                                print("En construcción.")
+                                id_reporte = int(get_reporte_libre())
+                                if id_reporte != -1:
+                                    nombre_reporte = input("Ingrese el nombre del usuario al que desea reportar: ")
+                                    estudiante_reporte = []
+                                    for estudiante in estudiantes:
+                                        if estudiante[4] == nombre_reporte and nombre_reporte:
+                                            estudiante_reporte = estudiante
+                                    clear()
+                                    if estudiante_reporte:
+                                        razon_reporte = input("Ingrese la razon del reporte: ")
+                                        reportes[id_reporte] = [str(id_reporte), "0", usuario_log[0], estudiante_reporte[0], razon_reporte]
+                                        clear()
+                                        print(f"Reportaste al usuario {nombre_reporte}.")
+                                    else:
+                                        print(f"El nombre {nombre_reporte} no pertenece a ningun usuario.")
+                                else:
+                                    print("Se ha alcanzado el numero máximo de reportes pendientes. Por favor, espere a que un moderador los revise y vuelva a intentarlo.")
                                 submenu = ""
                                 esperar_input()
                             case "c":
@@ -595,18 +630,19 @@ while not salir:
                         # opcion 1, gestionar usuarios
                         clear()
                         if submenu == "":
-                            print("\nGestionar Usuarios")
+                            print("Gestionar Usuarios")
                             print("\na. Desactivar Usuario")
-                            print("b. Volver")
+                            print("b. Volver\n")
                             submenu = input("Ingrese una opción: ")
                             clear()
                         match submenu.lower():
                             case "a":
                                 clear()
                                 if submenu_2 == "":
+                                    print("Desactivar Usuario\n")
                                     print("a. Buscar por ID")
                                     print("b. Buscar por nombre")
-                                    print("c. Volver")
+                                    print("c. Volver\n")
                                     submenu_2 = input("Ingrese una opcion: ")
                                     clear()
                                 match submenu_2.lower():
@@ -651,14 +687,41 @@ while not salir:
                         if submenu == "":
                             print("\nGestionar Reportes")
                             print("\na. Ver Reportes")
-                            print("b. Volver")
+                            print("b. Volver\n")
                             submenu = input("Ingrese una opción: ")
                             clear()
                         match submenu.lower():
                             case "a":
-                                # wip
-                                print("ver reportes")
-                                esperar_input()
+                                for reporte in reportes:
+                                    usuario_1 = get_usuario_por_id(reporte[2])
+                                    usuario_2 = get_usuario_por_id(reporte[3])
+                                    opcion_reporte = ""
+                                    if reporte[1] == "0" and  usuario_1[1] == "ACTIVO" and usuario_2[1] == "ACTIVO":
+                                        while not opcion_reporte:
+                                            clear()
+                                            print(f"Reporte {reporte[0]}")
+                                            print(f"El usuario ({usuario_1[0]}) {usuario_1[4]} reporta al usuario ({usuario_2[0]}) {usuario_2[4]}")
+                                            print(f"Razon: {reporte[4]}\n")
+                                            print("¿Que desea hacer?\n")
+                                            print("1. Ignorar reporte")
+                                            print("2. Bloquear al usuario reportado\n")
+                                            opcion_reporte = input("Eliga una opción: ")
+                                            clear()
+
+                                            match opcion_reporte:
+                                                case "1":
+                                                    reporte[1] = "2"
+                                                    print("Reporte desestimado con éxito.")
+                                                case "2":
+                                                    reporte[1] = "1"
+                                                    usuario_2[1] = "INACTIVO"
+                                                    print(f"Usuario {usuario_2[4]} bloqueado. Reporte resuelto con éxito.")
+                                                case _:
+                                                    print("Opción invalida. Intente de nuevo.")
+                                                    opcion_reporte = ""
+                                        submenu = ""
+                                        esperar_input()
+
                             case "b":
                                 submenu = ""
                                 menu = ""

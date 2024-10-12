@@ -1,42 +1,19 @@
 ################ INTEGRANTES ################
 # Colusso Manuel
-# Larrosa Joaquín
 # Grandoso Emmanuel
-# Aguirre Diego
+# Apellido Nombre
+# Apellido Nombre
 
 ################ DECLARADO DE VARIABLES ################
 
-# estudiante1_email: str
-# estudiante1_contraseña: str
-# estudiante1_nombre: str
-# estudiante1_hobbies: str
-# estudiante1_nacimiento: str
-# estudiante1_biografia: str
-# estudiante1_me_gusta: str
-# estudiante2_email: str
-# estudiante2_contraseña: str
-# estudiante2_nombre: str
-# estudiante2_hobbies: str
-# estudiante2_nacimiento: str
-# estudiante2_biografia: str
-# estudiante2_me_gusta: str
-# estudiante3_email: str
-# estudiante3_contraseña: str
-# estudiante3_nombre: str
-# estudiante3_hobbies: str
-# estudiante3_nacimiento: str
-# estudiante3_biografia: str
-# estudiante3_me_gusta: str
-# usuario_log: str
-# menu: str
-# submenu: str
-# submenu_2: str
+#
 
 ################ IMPORTACIONES ################
 
 from getpass import getpass
 from datetime import datetime
 import os
+import pickle
 
 ################ FUNCIONES ################
 
@@ -211,44 +188,6 @@ def mostrar_datos_estudiante(estudiante: list):
     print(f"Biografía: {estudiante[7]}")
     print(f"Hobbies: {estudiante[5]}")
 
-################ VARIABLES ################
-
-ESTUDIANTES_MIN = 4
-ESTUDIANTES_MAX = 8
-MODERADORES_MIN = 1
-MODERADORES_MAX = 4
-REPORTES_MAX = 10
-
-# [id, estado, email, contraseña, nombre, hobbies, nacimiento, biografia]
-estudiantes = [[""]*8 for n in range(ESTUDIANTES_MAX)]
-for id in range(ESTUDIANTES_MAX):
-    estudiantes[id][0] = str(id)
-    estudiantes[id][1] = "INACTIVO"
-estudiantes[0] = ["0", "ACTIVO", "estudiante1@ayed.com", "111111", "Estudiante1", "a", "", "f"]
-estudiantes[1] = ["1", "ACTIVO", "estudiante2@ayed.com", "222222", "Estudiante2", "b", "", "g"]
-estudiantes[2] = ["2", "ACTIVO", "estudiante3@ayed.com", "333333", "Estudiante3", "c", "", "h"]
-estudiantes[3] = ["3", "ACTIVO", "estudiante4@ayed.com", "444444", "Estudiante4", "d", "", "i"]
-
-moderadores = [[""]*8 for n in range(MODERADORES_MAX)]
-for id in range(MODERADORES_MAX):
-    moderadores[id][0] = str(id)
-    moderadores[id][1] = "INACTIVO"
-moderadores[0] = ["0", "ACTIVO", "moderador1@ayed.com", "mod111", "Moderador1", "", "", ""]
-
-likes = [[False]*ESTUDIANTES_MAX for n in range(ESTUDIANTES_MAX)]
-
-# [id, estado, id_reportante, id_reportado, razon]
-reportes = [[""]*5 for n in range(REPORTES_MAX)]
-for id in range(REPORTES_MAX):
-    reportes[id][0] = str(id)
-
-usuario_log: str = ""
-menu: str = ""
-submenu: str = ""
-submenu_2: str = ""
-submenu_3: str = ""
-
-################ PROGRAMA ################
 
 def cantidad_estudiantes():
     usuarios = 0
@@ -417,6 +356,128 @@ def get_reporte_libre():
             return reporte[0]
     return "-1"
 
+def formatear_estudiante(estudiante):
+        # estudiante.id = estudiante.id.rjust(3, 0)
+        estudiante.email = estudiante.email.ljust(32, " ")
+        estudiante.nombre = estudiante.nombre.ljust(32, " ")
+        estudiante.sexo = estudiante.sexo.ljust(1, " ")
+        estudiante.contraseña = estudiante.contraseña.ljust(32, " ")
+        # estudiante.estado = estudiante.estado
+        estudiante.hobbies = estudiante.hobbies.ljust(255, " ")
+        estudiante.materia_favorita = estudiante.materia_favorita.ljust(16, " ")
+        estudiante.deporte_favorito = estudiante.deporte_favorito.ljust(16, " ")
+        estudiante.materia_fuerte = estudiante.materia_fuerte.ljust(16, " ")
+        estudiante.materia_debil = estudiante.materia_debil.ljust(16, " ")
+        estudiante.biografia = estudiante.biografia.ljust(255, " ")
+        estudiante.pais = estudiante.pais.ljust(32, " ")
+        estudiante.ciudad = estudiante.ciudad.ljust(32, " ")
+        estudiante.fecha_nacimiento = estudiante.fecha_nacimiento.ljust(10, " ")
+
+def formatear_moderador(moderador):
+        moderador.email = moderador.email.ljust(32, " ")
+        moderador.contraseña = moderador.contraseña.ljust(32, " ")
+
+def formatear_administrador(admin):
+        admin.email = admin.email.ljust(32, " ")
+        admin.contraseña = admin.contraseña.ljust(32, " ")
+
+def inicializar_usuarios():
+    estudiantes_archivo = open("./estudiantes.dat", 'w+b')
+    estudiantes = [ 
+        ["0", True, "estudiante1@ayed.com", "111111", "Estudiante1"],
+        ["1", True, "estudiante2@ayed.com", "222222", "Estudiante2"],
+        ["2", True, "estudiante3@ayed.com", "333333", "Estudiante3"],
+        ["3", True, "estudiante4@ayed.com", "444444", "Estudiante4"],
+    ]
+    for estudiante in estudiantes:
+        estudiante_obj = Estudiante()
+        estudiante_obj.id = estudiante[0]
+        estudiante_obj.estado = estudiante[1]
+        estudiante_obj.email = estudiante[2]
+        estudiante_obj.contraseña = estudiante[3]
+        estudiante_obj.nombre = estudiante[4]
+        formatear_estudiante(estudiante_obj)
+        pickle.dump(estudiante_obj, estudiantes_archivo)
+        estudiantes_archivo.flush()
+
+    estudiantes_archivo.close()
+
+    # TODO Repetir para moderadores y administradores
+
+################ VARIABLES ################
+
+ESTUDIANTES_MIN = 4
+ESTUDIANTES_MAX = 8
+MODERADORES_MIN = 1
+MODERADORES_MAX = 4
+REPORTES_MAX = 10
+
+# Estructuras de los usuarios
+class Estudiante:
+    def __init__(self):
+        self.id = 0
+        self.email = ""
+        self.nombre = ""
+        self.sexo = ""
+        self.contraseña = ""
+        self.estado = True
+        self.hobbies = ""
+        self.materia_favorita = ""
+        self.deporte_favorito = ""
+        self.materia_fuerte = ""
+        self.materia_debil = ""
+        self.biografia = ""
+        self.pais = ""
+        self.ciudad = ""
+        self.fecha_nacimiento = ""
+
+
+class Moderador:
+    def __init__(self):
+        self.id = 0
+        self.email = ""
+        self.contraseña = ""
+        self.estado = True
+
+
+class Administrador:
+    def __init__(self):
+        self.id = 0
+        self.email = ""
+        self.contraseña = ""
+
+# [id, estado, email, contraseña, nombre, hobbies, nacimiento, biografia]
+estudiantes = [[""]*8 for n in range(ESTUDIANTES_MAX)]
+for id in range(ESTUDIANTES_MAX):
+    estudiantes[id][0] = str(id)
+    estudiantes[id][1] = "INACTIVO"
+estudiantes[0] = ["0", "ACTIVO", "estudiante1@ayed.com", "111111", "Estudiante1", "a", "", "f"]
+estudiantes[1] = ["1", "ACTIVO", "estudiante2@ayed.com", "222222", "Estudiante2", "b", "", "g"]
+estudiantes[2] = ["2", "ACTIVO", "estudiante3@ayed.com", "333333", "Estudiante3", "c", "", "h"]
+estudiantes[3] = ["3", "ACTIVO", "estudiante4@ayed.com", "444444", "Estudiante4", "d", "", "i"]
+
+moderadores = [[""]*8 for n in range(MODERADORES_MAX)]
+for id in range(MODERADORES_MAX):
+    moderadores[id][0] = str(id)
+    moderadores[id][1] = "INACTIVO"
+moderadores[0] = ["0", "ACTIVO", "moderador1@ayed.com", "mod111", "Moderador1", "", "", ""]
+
+likes = [[False]*ESTUDIANTES_MAX for n in range(ESTUDIANTES_MAX)]
+
+# [id, estado, id_reportante, id_reportado, razon]
+reportes = [[""]*5 for n in range(REPORTES_MAX)]
+for id in range(REPORTES_MAX):
+    reportes[id][0] = str(id)
+
+usuario_log: str = ""
+menu: str = ""
+submenu: str = ""
+submenu_2: str = ""
+submenu_3: str = ""
+
+################ PROGRAMA ################
+
+inicializar_usuarios()
 salir = False
 while not salir:
     usuario_log = logueo_o_registrarse()
@@ -721,6 +782,7 @@ while not salir:
                                                     opcion_reporte = ""
                                         submenu = ""
                                         esperar_input()
+                                submenu = ""
 
                             case "b":
                                 submenu = ""
